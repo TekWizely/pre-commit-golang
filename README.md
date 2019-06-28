@@ -82,7 +82,7 @@ By default, hooks run against matching staged files individually.
 Currently, file-based hooks DO NOT accept user-args.
 
 ### Repo-Based Hooks
-Hooks named `'*-repo-*'` only run once (if any matching files are staged).  They are NOT provided the list of staged files and more full-repo oriented.
+Hooks named `'*-repo-*'` only run once (if any matching files are staged).  They are NOT provided the list of staged files and are more full-repo oriented.
 
 #### User args
 Generally, repo-based hooks DO accept user-args.
