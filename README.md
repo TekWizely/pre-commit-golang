@@ -9,7 +9,7 @@ Requires the [Pre-Commit.com](https://pre-commit.com) Hook Management framework.
 
 You can copy/paste the following snippet into your `.pre-commit-config.yaml` file.
 
-**NOTE** A more fleshed-out version can be found in this repo's ['sample-config.yaml'](https://github.com/TekWizely/pre-commit-golang/blob/master/sample-config.yaml) )
+**NOTE** A more fleshed-out version can be found in [`sample-config.yaml`](https://github.com/TekWizely/pre-commit-golang/blob/master/sample-config.yaml)
 
 ```yaml
     # ==========================================================================
