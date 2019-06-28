@@ -109,17 +109,17 @@ Consider adding aliases to longer-named hooks for easier CLI usage.
 --------
 ## Hooks
 
- - [Go Build]()
- - [Go Test]()
- - [Go Vet]()
+ - [Go Build](https://github.com/TekWizely/pre-commit-golang#go-build-repo-)
+ - [Go Test](https://github.com/TekWizely/pre-commit-golang#go-test-repo-)
+ - [Go Vet](https://github.com/TekWizely/pre-commit-golang#go-vet--go-vet-repo-)
  - Formatters
-   - [go-fmt]()
-   - [go-includes]()
-   - [go-returns]()
+   - [go-fmt](https://github.com/TekWizely/pre-commit-golang#go-fmt-fix)
+   - [go-imports](https://github.com/TekWizely/pre-commit-golang#go-imports-fix)
+   - [go-returns](https://github.com/TekWizely/pre-commit-golang#go-returns-fix)
  - Style Checkers
-   - [go-lint]()
-   - [go-critic]()
- - [GoLangCI-Lint]()
+   - [go-lint](https://github.com/TekWizely/pre-commit-golang#go-lint)
+   - [go-critic](https://github.com/TekWizely/pre-commit-golang#go-critic)
+ - [GoLangCI-Lint](https://github.com/TekWizely/pre-commit-golang#golangci-lint)
 
  ------------------
 ### go-build-repo-*
