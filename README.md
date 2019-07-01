@@ -113,17 +113,20 @@ Hooks named `'*-repo-*'` only run once (if any matching files are staged).  They
 #### User args
 Generally, repo-based hooks DO accept user-args.
 
-### Repo-Hook Suffixes
+#### Repo-Hook Suffixes
  - `*-repo`     : Hook runs with no target argument (good for adding custom arguments / targets)
  - `*-repo-dir` : Hook runs using `'./...'` as target.
  - `*-repo-pkg` : Hook runs using `'$(go list)/...'` as target.
 
+--------------
 ### Fix Suffix
 Hooks named `'*-fix'` fix (modify) files directly, when possible.
 
+-----------
 ### Aliases
 Consider adding aliases to longer-named hooks for easier CLI usage.
 
+--------------------------
 ### Useful Hook Parameters
 ```
 -   id: hook-id
