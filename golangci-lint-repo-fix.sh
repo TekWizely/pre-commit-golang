@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 set -e
-golangci-lint run --fix
+golangci-lint run --fix "$@"
