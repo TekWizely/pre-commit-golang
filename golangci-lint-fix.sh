@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-set -e
+errCode=0
 for file in "$@"; do
 	golangci-lint run --fix "${file}"
+	if [ $? -ne 0 ]; then
+		errCode=1
+	fi
 done
+exit $errCode
