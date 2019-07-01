@@ -30,14 +30,14 @@ repos:
     #   Currently, directory-based hooks DO NOT accept user-args.
     #
     # Directory-Hook Suffixes:
-    #   *-dir-* : Hook runs with './$(dirname $FILE)' as target.
-    #   *-pkg-* : Hook runs with ''$(go list)/$(dirname $FILE)' as target.
+    #   *-dir-* : Hook runs using './$(dirname $FILE)' as target.
+    #   *-pkg-* : Hook runs using ''$(go list)/$(dirname $FILE)' as target.
     #
-    # ! Multiple Hook Invocations by Pre-Commit
+    # ! Multiple Hook Invocations
     # !   By design, the directory-based hooks only execute against a given
-    # !   directory once per hook invocation. HOWEVER, pre-commit can invoke a
-    # !   hook multiple times if a large number of files are staged
-    # !   (due to OS command-line length limits).
+    # !   directory once per hook invocation.
+    # !   HOWEVER, due to OS command-line length limits, Pre-Commit can invoke
+    # !   a hook multiple times if a large number of files are staged.
     #
     # Repo-Based Hooks:
     #   Hooks named '*-repo-*' only run once (if any matching files are staged).

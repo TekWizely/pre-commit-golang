@@ -104,7 +104,9 @@ Currently, directory-based hooks DO NOT accept user-args.
  - ``*-pkg-*`` : Hook runs using `'$(go list)/$(dirname $FILE)` as target.
 
 #### Multiple Hook Invocations
-By design, the directory-based hooks only execute against a given directory once per hook invocation. HOWEVER, due to OS command-line length limits, Pre-Commit can invoke a hook multiple times if a large number of files are staged.
+By design, the directory-based hooks only execute against a given directory once per hook invocation.
+
+HOWEVER, due to OS command-line length limits, Pre-Commit can invoke a hook multiple times if a large number of files are staged.
 
 --------------------
 ### Repo-Based Hooks
