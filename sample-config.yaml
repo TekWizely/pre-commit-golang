@@ -24,6 +24,21 @@ repos:
     #   By default, hooks run against matching staged files individually.
     #   Currently, file-based hooks DO NOT accept user-args.
     #
+    # Directory-Based Hooks:
+    #   Some hooks work on a per-directory basis.  The hooks run against the
+    #   directory containing one or more matching staged files.
+    #   Currently, directory-based hooks DO NOT accept user-args.
+    #
+    # Directory-Hook Suffixes:
+    #   *-dir-* : Hook runs with './$(dirname $FILE)' as target.
+    #   *-pkg-* : Hook runs with ''$(go list)/$(dirname $FILE)' as target.
+    #
+    # ! Multiple Hook Invocations by Pre-Commit
+    # !   By design, the directory-based hooks only execute against a given
+    # !   directory once per hook invocation. HOWEVER, pre-commit can invoke a
+    # !   hook multiple times if a large number of files are staged
+    # !   (due to OS command-line length limits).
+    #
     # Repo-Based Hooks:
     #   Hooks named '*-repo-*' only run once (if any matching files are staged).
     #   They are NOT provided the list of staged files.
@@ -53,12 +68,16 @@ repos:
     #
     # Go Build
     #
+    -   id: go-build-dir
+    -   id: go-build-pkg
     -   id: go-build-repo
     -   id: go-build-repo-dir
     -   id: go-build-repo-pkg
     #
     # Go Test
     #
+    -   id: go-test-dir
+    -   id: go-test-pkg
     -   id: go-test-repo
     -   id: go-test-repo-dir
     -   id: go-test-repo-pkg
@@ -66,6 +85,8 @@ repos:
     # Go Vet
     #
     -   id: go-vet
+    -   id: go-vet-dir
+    -   id: go-vet-pkg
     -   id: go-vet-repo
     -   id: go-vet-repo-dir
     -   id: go-vet-repo-pkg
@@ -89,5 +110,9 @@ repos:
     #
     -   id: golangci-lint
     -   id: golangci-lint-fix
+    -   id: golangci-lint-dir
+    -   id: golangci-lint-dir-fix
+    -   id: golangci-lint-pkg
+    -   id: golangci-lint-pkg-fix
     -   id: golangci-lint-repo
     -   id: golangci-lint-repo-fix

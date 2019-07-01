@@ -1,4 +1,32 @@
 # ==============================================================================
+# go-build-dir
+#   * Directory-Based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-build-dir
+    name: 'go-build-dir'
+    entry: go-build-dir.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'go build ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-build-pkg
+#   * Directory-Based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-build-pkg
+    name: 'go-build-pkg'
+    entry: go-build-pkg.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'go build $(go list)/$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
 # go-build-repo
 #   * Repo-based
 #   * No Target Specified
@@ -38,6 +66,34 @@
     language: 'script'
     description: "Run 'go build $(go list)/...' in repo root folder"
     pass_filenames: false
+
+# ==============================================================================
+# go-test-dir
+#   * Directory-Based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-test-dir
+    name: 'go-test-dir'
+    entry: go-test-dir.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'go test ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-test-pkg
+#   * Directory-Based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-test-pkg
+    name: 'go-test-pkg'
+    entry: go-test-pkg.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'go test $(go list)/$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
 
 # ==============================================================================
 # go-test-repo
@@ -93,6 +149,34 @@
     language: 'script'
     description: "Run 'go vet $FILE' for each staged .go file"
     pass_filenames: true
+
+# ==============================================================================
+# go-vet-dir
+#   * Directory-Based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-vet-dir
+    name: 'go-vet-dir'
+    entry: go-vet-dir.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'go vet ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-vet-pkg
+#   * Directory-Based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-vet-pkg
+    name: 'go-vet-pkg'
+    entry: go-vet-pkg.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'go vet $(go list)/$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
 
 # ==============================================================================
 # go-vet-repo
@@ -232,6 +316,64 @@
     language: 'script'
     description: "Run 'golangci-lint run --fix $FILE' for each staged .go file"
     pass_filenames: true
+
+# ==============================================================================
+# golangci-lint-dir
+#   * Directory-Based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: golangci-lint-dir
+    name: 'golangci-lint-dir'
+    entry: golangci-lint-dir.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'golangci-lint run ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# golangci-lint-dir-fix
+#   * Directory-Based
+#   * Modifies files
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: golangci-lint-dir-fix
+    name: 'golangci-lint-dir-fix'
+    entry: golangci-lint-dir-fix.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'golangci-lint run --fix ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# golangci-lint-pkg
+#   * Directory-Based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: golangci-lint-pkg
+    name: 'golangci-lint-pkg'
+    entry: golangci-lint-pkg.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'golangci-lint run $(go list)/$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# golangci-lint-pkg-fix
+#   * Directory-Based
+#   * Modifies files
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: golangci-lint-pkg-fix
+    name: 'golangci-lint-pkg-fix'
+    entry: golangci-lint-pkg-fix.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'golangci-lint run --fix $(go list)/$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
 
 # ==============================================================================
 # golangci-lint-repo

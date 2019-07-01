@@ -28,12 +28,16 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #
     # Go Build
     #
+    -   id: go-build-dir
+    -   id: go-build-pkg
     -   id: go-build-repo
     -   id: go-build-repo-dir
     -   id: go-build-repo-pkg
     #
     # Go Test
     #
+    -   id: go-test-dir
+    -   id: go-test-pkg
     -   id: go-test-repo
     -   id: go-test-repo-dir
     -   id: go-test-repo-pkg
@@ -41,6 +45,8 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # Go Vet
     #
     -   id: go-vet
+    -   id: go-vet-dir
+    -   id: go-vet-pkg
     -   id: go-vet-repo
     -   id: go-vet-repo-dir
     -   id: go-vet-repo-pkg
@@ -64,6 +70,10 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #
     -   id: golangci-lint
     -   id: golangci-lint-fix
+    -   id: golangci-lint-dir
+    -   id: golangci-lint-dir-fix
+    -   id: golangci-lint-pkg
+    -   id: golangci-lint-pkg-fix
     -   id: golangci-lint-repo
     -   id: golangci-lint-repo-fix
 ```
@@ -75,12 +85,28 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
 Unless configured to `"always_run"` (see below), hooks ONLY run when
 matching file types (usually `*.go`) are staged.
 
+--------------------
 ### File-Based Hooks
 By default, hooks run against matching staged files individually.
 
 #### No User Args
 Currently, file-based hooks DO NOT accept user-args.
 
+-------------------------
+### Directory-Based Hooks
+Some hooks work on a per-directory basis.  The hooks run against the directory containing one or more matching staged files.
+
+#### No User Args
+Currently, directory-based hooks DO NOT accept user-args.
+
+#### Directory-Hook Suffixes
+ - ``*-dir-*`` : Hook runs using `./$(dirname $FILE)` as target.
+ - ``*-pkg-*`` : Hook runs using `'$(go list)/$(dirname $FILE)` as target.
+
+#### Multiple Hook Invocations
+By design, the directory-based hooks only execute against a given directory once per hook invocation. HOWEVER, due to OS command-line length limits, Pre-Commit can invoke a hook multiple times if a large number of files are staged.
+
+--------------------
 ### Repo-Based Hooks
 Hooks named `'*-repo-*'` only run once (if any matching files are staged).  They are NOT provided the list of staged files and are more full-repo oriented.
 
@@ -121,8 +147,12 @@ Consider adding aliases to longer-named hooks for easier CLI usage.
    - [go-critic](#go-critic)
  - [GoLangCI-Lint](#golangci-lint)
 
- ------------------
+-------------------
 ### go-build-repo-*
+
+#### Directory-Based Hooks
+  - `go-build-dir`
+  - `go-build-pkg`
 
 #### Repo-Based Hooks
  - `go-build-repo`
@@ -138,6 +168,10 @@ Comes with Golang ( [golang.org](https://golang.org/) )
 
 ------------------
 ### go-test-repo-*
+
+#### Directory-Based Hooks
+ - `go-test-dir`
+ - `go-test-pkd`
 
 #### Repo-Based Hooks
  - `go-test-repo`
@@ -156,6 +190,10 @@ Comes with Golang ( [golang.org](https://golang.org/) )
 
 #### File-Based Hooks
  - `go-vet` - Runs against staged `.go` files
+
+#### Directory-Based Hooks
+ - `go-vet-dir`
+ - `go-vet-pkg`
 
 #### Repo-Based Hooks
  - `go-vet-repo`
@@ -288,16 +326,20 @@ go get -u golang.org/x/lint/golint
 - `golangci-lint`
 - `golangci-lint-fix`
 
+#### Directory-Based Hooks
+- `golangci-lint-dir`
+- `golangci-lint-dir-fix`
+- `golangci-lint-pkg`
+- `golangci-lint-pkg-fix`
+
 #### Repo-Based Hooks
 - `golangci-lint-repo`
 - `golangci-lint-repo-fix`
-
 
 #### Install
 ```
 go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 ```
-
 #### Useful Args
 ```
    --fast            : Run only fast linters (from enabled linters sets)
