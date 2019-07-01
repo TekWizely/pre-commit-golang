@@ -91,7 +91,7 @@
     entry: go-vet.sh
     types: [go]
     language: 'script'
-    description: "Run 'go vet $file' for each staged .go file"
+    description: "Run 'go vet $FILE' for each staged .go file"
     pass_filenames: true
 
 # ==============================================================================
@@ -147,7 +147,7 @@
     entry: go-fmt-fix.sh
     types: [go]
     language: 'script'
-    description: "Run 'gofmt -l -w $file' for each staged .go file"
+    description: "Run 'gofmt -l -w $FILE' for each staged .go file"
     pass_filenames: true
 
 # ==============================================================================
@@ -162,7 +162,7 @@
     entry: go-imports-fix.sh
     types: [go]
     language: 'script'
-    description: "Run 'goimports -l -w $file' for each staged .go file"
+    description: "Run 'goimports -l -w $FILE' for each staged .go file"
     pass_filenames: true
 
 # ==============================================================================
@@ -177,7 +177,7 @@
     entry: go-returns-fix.sh
     types: [go]
     language: 'script'
-    description: "Run 'goreturns -p -l -w $file' for each staged go file"
+    description: "Run 'goreturns -p -l -w $FILE' for each staged go file"
     pass_filenames: true
 
 # ==============================================================================
@@ -189,7 +189,7 @@
     entry: go-lint.sh
     types: [go]
     language: 'script'
-    description: "Run 'golint $file' for each staged .go file"
+    description: "Run 'golint $FILE' for each staged .go file"
     pass_filenames: true
 
 # ==============================================================================
@@ -201,7 +201,7 @@
     entry: go-critic.sh
     types: [go]
     language: 'script'
-    description: "Run 'gocritic check $file' for each staged .go file"
+    description: "Run 'gocritic check $FILE' for each staged .go file"
     pass_filenames: true
 
 # ==============================================================================
@@ -215,7 +215,7 @@
     entry: golangci-lint.sh
     types: [go]
     language: 'script'
-    description: "Run 'golangci-lint run $file' for each staged .go file"
+    description: "Run 'golangci-lint run $FILE' for each staged .go file"
     pass_filenames: true
 
 # ==============================================================================
@@ -230,7 +230,7 @@
     entry: golangci-lint-fix.sh
     types: [go]
     language: 'script'
-    description: "Run 'golangci-lint run --fix $file' for each staged .go file"
+    description: "Run 'golangci-lint run --fix $FILE' for each staged .go file"
     pass_filenames: true
 
 # ==============================================================================
