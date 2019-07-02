@@ -28,6 +28,7 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #
     # Go Build
     #
+    -   id: go-build-mod
     -   id: go-build-dir
     -   id: go-build-pkg
     -   id: go-build-repo
@@ -36,6 +37,7 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #
     # Go Test
     #
+    -   id: go-test-mod
     -   id: go-test-dir
     -   id: go-test-pkg
     -   id: go-test-repo
@@ -45,6 +47,7 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # Go Vet
     #
     -   id: go-vet
+    -   id: go-vet-mod
     -   id: go-vet-dir
     -   id: go-vet-pkg
     -   id: go-vet-repo
@@ -70,6 +73,8 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #
     -   id: golangci-lint
     -   id: golangci-lint-fix
+    -   id: golangci-lint-mod
+    -   id: golangci-lint-mod-fix
     -   id: golangci-lint-dir
     -   id: golangci-lint-dir-fix
     -   id: golangci-lint-pkg
@@ -100,8 +105,9 @@ Some hooks work on a per-directory basis.  The hooks run against the directory c
 Currently, directory-based hooks DO NOT accept user-args.
 
 #### Directory-Hook Suffixes
- - ``*-dir-*`` : Hook runs using `./$(dirname $FILE)` as target.
- - ``*-pkg-*`` : Hook runs using `'$(go list)/$(dirname $FILE)` as target.
+ - `*-mod-*` : Hook runs inside first module root directory going up $FILE path.
+ - `*-dir-*` : Hook runs using `./$(dirname $FILE)` as target.
+ - `*-pkg-*` : Hook runs using `'$(go list)/$(dirname $FILE)` as target.
 
 #### Multiple Hook Invocations
 By design, the directory-based hooks only execute against a given directory once per hook invocation.
@@ -156,6 +162,7 @@ Consider adding aliases to longer-named hooks for easier CLI usage.
 ### go-build-repo-*
 
 #### Directory-Based Hooks
+  - `go-build-mod`
   - `go-build-dir`
   - `go-build-pkg`
 
@@ -175,6 +182,7 @@ Comes with Golang ( [golang.org](https://golang.org/) )
 ### go-test-repo-*
 
 #### Directory-Based Hooks
+ - `go-test-mod`
  - `go-test-dir`
  - `go-test-pkd`
 
@@ -197,6 +205,7 @@ Comes with Golang ( [golang.org](https://golang.org/) )
  - `go-vet` - Runs against staged `.go` files
 
 #### Directory-Based Hooks
+ - `go-vet-mod`
  - `go-vet-dir`
  - `go-vet-pkg`
 
@@ -332,6 +341,8 @@ go get -u golang.org/x/lint/golint
 - `golangci-lint-fix`
 
 #### Directory-Based Hooks
+- `golangci-lint-mod`
+- `golangci-lint-mod-fix`
 - `golangci-lint-dir`
 - `golangci-lint-dir-fix`
 - `golangci-lint-pkg`

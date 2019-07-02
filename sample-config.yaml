@@ -30,8 +30,10 @@ repos:
     #   Currently, directory-based hooks DO NOT accept user-args.
     #
     # Directory-Hook Suffixes:
+    #   *-mod-* : Hook runs inside first module root directory going up
+    #             $FILE path.
     #   *-dir-* : Hook runs using './$(dirname $FILE)' as target.
-    #   *-pkg-* : Hook runs using ''$(go list)/$(dirname $FILE)' as target.
+    #   *-pkg-* : Hook runs using '$(go list)/$(dirname $FILE)' as target.
     #
     # ! Multiple Hook Invocations
     # !   By design, the directory-based hooks only execute against a given
@@ -68,6 +70,7 @@ repos:
     #
     # Go Build
     #
+    -   id: go-build-mod
     -   id: go-build-dir
     -   id: go-build-pkg
     -   id: go-build-repo
@@ -76,6 +79,7 @@ repos:
     #
     # Go Test
     #
+    -   id: go-test-mod
     -   id: go-test-dir
     -   id: go-test-pkg
     -   id: go-test-repo
@@ -85,6 +89,7 @@ repos:
     # Go Vet
     #
     -   id: go-vet
+    -   id: go-vet-mod
     -   id: go-vet-dir
     -   id: go-vet-pkg
     -   id: go-vet-repo
@@ -110,6 +115,8 @@ repos:
     #
     -   id: golangci-lint
     -   id: golangci-lint-fix
+    -   id: golangci-lint-mod
+    -   id: golangci-lint-mod-fix
     -   id: golangci-lint-dir
     -   id: golangci-lint-dir-fix
     -   id: golangci-lint-pkg
