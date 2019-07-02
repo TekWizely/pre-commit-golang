@@ -7,7 +7,7 @@
 -   id: go-build-mod
     name: 'go-build-mod'
     entry: go-build-mod.sh
-    types: [go]
+    files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); go build ./...' for each staged .go file"
     pass_filenames: true
@@ -91,7 +91,7 @@
 -   id: go-test-mod
     name: 'go-test-mod'
     entry: go-test-mod.sh
-    types: [go]
+    files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); go test ./...' for each staged .go file"
     pass_filenames: true
@@ -189,7 +189,7 @@
 -   id: go-vet-mod
     name: 'go-vet-mod'
     entry: go-vet-mod.sh
-    types: [go]
+    files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); go vet ./...' for each staged .go file"
     pass_filenames: true
@@ -371,7 +371,7 @@
 -   id: golangci-lint-mod
     name: 'golangci-lint-mod'
     entry: golangci-lint-mod.sh
-    types: [go]
+    files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); golangci-lint run ./...' for each staged .go file"
     pass_filenames: true
@@ -387,7 +387,7 @@
 -   id: golangci-lint-mod-fix
     name: 'golangci-lint-mod-fix'
     entry: golangci-lint-mod-fix.sh
-    types: [go]
+    files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); golangci-lint run --fix ./...' for each staged .go file"
     pass_filenames: true
