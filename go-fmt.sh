@@ -19,7 +19,7 @@ fi
 
 errCode=0
 for file in "${FILES}"; do
-	gofmt -l -d "$@"" "${file}"
+	gofmt -l -d "$@" "${file}"
 	if [ $? -ne 0 ]; then
 		errCode=1
 	fi
