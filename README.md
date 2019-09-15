@@ -1,6 +1,6 @@
 # Pre-Commit-GoLang [![MIT license](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/tekwizely/pre-commit-golang/blob/master/LICENSE)
 
-A set of git pre-commit hooks for Golang projects.
+A set of git pre-commit hooks for Golang with support for Modules.
 
 Requires the [Pre-Commit.com](https://pre-commit.com) Hook Management framework.
 
@@ -29,36 +29,30 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # Go Build
     #
     -   id: go-build-mod
-    -   id: go-build-dir
     -   id: go-build-pkg
-    -   id: go-build-repo
-    -   id: go-build-repo-dir
+    -   id: go-build-repo-mod
     -   id: go-build-repo-pkg
     #
     # Go Test
     #
     -   id: go-test-mod
-    -   id: go-test-dir
     -   id: go-test-pkg
-    -   id: go-test-repo
-    -   id: go-test-repo-dir
+    -   id: go-test-repo-mod
     -   id: go-test-repo-pkg
     #
     # Go Vet
     #
     -   id: go-vet
     -   id: go-vet-mod
-    -   id: go-vet-dir
     -   id: go-vet-pkg
-    -   id: go-vet-repo
-    -   id: go-vet-repo-dir
+    -   id: go-vet-repo-mod
     -   id: go-vet-repo-pkg
     #
     # Formatters
     #
-    -   id: go-fmt-fix
-    -   id: go-imports-fix # replaces go-fmt-fix
-    -   id: go-returns-fix # replaces go-imports-fix & go-fmt-fix
+    -   id: go-fmt
+    -   id: go-imports # replaces go-fmt
+    -   id: go-returns # replaces go-imports & go-fmt
     #
     # Style Checkers
     #
@@ -72,245 +66,277 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # - https://github.com/golangci/golangci-lint
     #
     -   id: golangci-lint
-    -   id: golangci-lint-fix
     -   id: golangci-lint-mod
-    -   id: golangci-lint-mod-fix
-    -   id: golangci-lint-dir
-    -   id: golangci-lint-dir-fix
     -   id: golangci-lint-pkg
-    -   id: golangci-lint-pkg-fix
-    -   id: golangci-lint-repo
-    -   id: golangci-lint-repo-fix
+    -   id: golangci-lint-repo-mod
+    -   id: golangci-lint-repo-pkg
 ```
 
 -----------
 ## Overview
 
-### Staged Files
-Unless configured to `"always_run"` (see below), hooks ONLY run when
-matching file types (usually `*.go`) are staged.
+### Hook Targets
 
---------------------
-### File-Based Hooks
-By default, hooks run against matching staged files individually.
+#### File-Based Hooks
+Some hooks run against matching staged files individually.
 
-#### No User Args
-Currently, file-based hooks DO NOT accept user-args.
+##### Module-Based Hooks
+Some hooks work on a per-module basis.  The hooks run against module root folders containing one or more matching staged files.
 
--------------------------
-### Directory-Based Hooks
-Some hooks work on a per-directory basis.  The hooks run against the directory containing one or more matching staged files.
+_Module Root Folder:_ A folder containing a `go.mod` file.  Discovered by walking up the folder path from the staged file.
 
-#### No User Args
-Currently, directory-based hooks DO NOT accept user-args.
+###### Module Mode
+Module-based hooks enable module mode (`GO111MODULE=on`) before invoking their respective tools.
 
-#### Directory-Hook Suffixes
- - `*-mod-*` : Hook runs inside first module root directory going up $FILE path.
- - `*-dir-*` : Hook runs using `./$(dirname $FILE)` as target.
- - `*-pkg-*` : Hook runs using `'$(go list)/$(dirname $FILE)` as target.
+##### Package-Based Hooks
+Some hooks work on a per-package basis.  The hooks run against folders containing one or more staged files.
 
-#### Multiple Hook Invocations
-By design, the directory-based hooks only execute against a given directory once per hook invocation.
+_Package Folder:_ A folder containing one or more `.go` files.
 
-HOWEVER, due to OS command-line length limits, Pre-Commit can invoke a hook multiple times if a large number of files are staged.
+###### Package Mode
+Package-based hooks disable module mode (`GO111MODULE=off`) before invoking their respective tools.
 
---------------------
-### Repo-Based Hooks
-Hooks named `'*-repo-*'` only run once (if any matching files are staged).  They are NOT provided the list of staged files and are more full-repo oriented.
+##### Repo-Based Hooks
+Some hooks run against the entire repo.  The hooks only run once (if any matching files are staged), and are NOT provided the list of staged files,
 
-#### User args
-Generally, repo-based hooks DO accept user-args.
+-----------------
+### Hook Suffixes
+Hooks have suffixes in their name that indicate their targets:
 
-#### Repo-Hook Suffixes
- - `*-repo`     : Hook runs with no target argument (good for adding custom arguments / targets)
- - `*-repo-dir` : Hook runs using `'./...'` as target.
- - `*-repo-pkg` : Hook runs using `'$(go list)/...'` as target.
+| Suffix      | Target       | Description                                       |
+|-------------|--------------|---------------------------------------------------|
+| \<none>     | Files        | Targets staged files directly                     |
+| `-mod`      | Module       | Targets module root folders of staged `.go` files |
+| `-pkg`      | Package      | Targets folders containing staged `.go` files     |
+| `-repo-mod` | All Modules  | Targets all module root folders in the repo       |
+| `-repo-pkg` | All Packages | Targets all package folders in the repo           |
 
---------------
-### Fix Suffix
-Hooks named `'*-fix'` fix (modify) files directly, when possible.
+-----------------------------
+### Multiple Hook Invocations
+Due to OS command-line-length limits, Pre-Commit can invoke a hook multiple times if a large number of files are staged.
 
------------
-### Aliases
-Consider adding aliases to longer-named hooks for easier CLI usage.
+For file and repo-based hooks, this isn't an issue, but for module and package-based hooks, there is a potential for the hook to run against the same module or package multiple times, duplicating any errors or warnings.
 
 --------------------------
 ### Useful Hook Parameters
 ```
 -   id: hook-id
-    alias: hook-alias       # Create an alias
-    args: [arg1, arg2, ...] # Pass arguments
-    always_run: true        # Run even if no matching files staged
+    args: ["--", arg1, arg2, ...] # Pass options (after "--")
+    always_run: true              # Run even if no matching files staged
+    alias: hook-alias             # Create an alias
 ```
+
+#### Passing Options To Hooks
+You can pass options into individual hooks to customize tool behavior.
+
+Use a leading `"--"` argument to separate the hook options from the modified-file list that Pre-Commit passes into the hook.
+
+For repo-based hooks, the `--` is optional
+
+See each hook's description below for some popular options that you might want to use.
+
+Additionally, you can view each tool's individual home page or help settings to learn about all the available options.
+
+#### Always Run
+By default, hooks ONLY run when matching file types (usually `*.go`) are staged.
+
+When configured to `"always_run"`, a hook is executed as if EVERY matching file were staged.
+
+#### Aliases
+Consider adding aliases to longer-named hooks for easier CLI usage.
 
 --------
 ## Hooks
 
- - [Go Build](#go-build-repo-)
- - [Go Test](#go-test-repo-)
- - [Go Vet](#go-vet--go-vet-repo-)
+ - Correctness Checkers
+   - [go-build](#go-build)
+   - [go-test](#go-test)
+   - [go-vet](#go-vet)
  - Formatters
-   - [go-fmt](#go-fmt-fix)
-   - [go-imports](#go-imports-fix)
-   - [go-returns](#go-returns-fix)
+   - [go-fmt](#go-fmt)
+   - [go-imports](#go-imports)
+   - [go-returns](#go-returns)
  - Style Checkers
    - [go-lint](#go-lint)
    - [go-critic](#go-critic)
- - [GoLangCI-Lint](#golangci-lint)
+ - GolangCI-Lint
+   - [golangci-lint](#golangci-lint)
 
--------------------
-### go-build-repo-*
+------------
+### go-build
+Compiles packages, along with their dependencies, but does not install the results.
 
-#### Directory-Based Hooks
-  - `go-build-mod`
-  - `go-build-dir`
-  - `go-build-pkg`
+| Hook ID             | Description
+|---------------------|------------
+| `go-build-mod`      | Run `'cd $(mod_root $FILE); go build [$ARGS] ./...'` for each staged .go file
+| `go-build-pkg`      | Run `'go build [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `go-build-repo-mod` | Run `'cd $(mod_root); go build [$ARGS] ./...'` for each module in the repo
+| `go-build-repo-pkg` | Run `'go build [$ARGS] ./...'` in repo root folder
 
-#### Repo-Based Hooks
- - `go-build-repo`
- - `go-build-repo-dir`
- - `go-build-repo-pkg`
-
-#### Install
+##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
 
-#### Help
+##### Help
  - https://golang.org/cmd/go/#hdr-Compile_packages_and_dependencies
  - `go help build`
 
-------------------
-### go-test-repo-*
+-----------
+### go-test
+Automates testing, printing a summary of test resutls.
 
-#### Directory-Based Hooks
- - `go-test-mod`
- - `go-test-dir`
- - `go-test-pkd`
+| Hook ID            | Description
+|--------------------|------------
+| `go-test-mod`      | Run `'cd $(mod_root $FILE); go test [$ARGS] ./...'` for each staged .go file
+| `go-test-pkg`      | Run `'go test [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `go-test-repo-mod` | Run `'cd $(mod_root); go test [$ARGS] ./...'` for each module in the repo
+| `go-test-repo-pkg` | Run `'go test [$ARGS] ./...'` in repo root folder
 
-#### Repo-Based Hooks
- - `go-test-repo`
- - `go-test-repo-dir`
- - `go-test-repo-pkg`
-
-#### Install
+##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
 
-#### Help
+##### Help
  - https://golang.org/cmd/go/#hdr-Test_packages
  - `go help test`
 
---------------------------
-### go-vet / go-vet-repo-*
+----------
+### go-vet
+Examines Go source code and reports suspicious constructs, such as
+Printf calls whose arguments do not align with the format string. Vet uses
+heuristics that do not guarantee all reports are genuine problems, but it
+can find errors not caught by the compilers.
 
-#### File-Based Hooks
- - `go-vet` - Runs against staged `.go` files
+| Hook ID           | Description
+|-------------------|------------
+| `go-vet`          | Run `'go vet [$ARGS] $FILE'` for each staged .go file
+| `go-vet-mod`      | Run `'cd $(mod_root $FILE); go vet [$ARGS] ./...'` for each staged .go file
+| `go-vet-pkg`      | Run `'go vet [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `go-vet-repo-mod` | Run `'cd $(mod_root); go vet [$ARGS] ./...'` for each module in the repo
+| `go-vet-repo-pkg` | Run `'go vet [$ARGS] ./...'` in repo root folder
 
-#### Directory-Based Hooks
- - `go-vet-mod`
- - `go-vet-dir`
- - `go-vet-pkg`
-
-#### Repo-Based Hooks
- - `go-vet-repo`
- - `go-vet-repo-dir`
- - `go-vet-repo-pkg`
-
-#### Install
+##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
 
-#### Help
+##### Help
  - https://golang.org/cmd/go/#hdr-Report_likely_mistakes_in_packages
- - `go help vet`
- - `go tool vet help`
+ - `go doc cmd/vet`
 
---------------
-### go-fmt-fix
- - File-based
- - Modifies (fixes) files
+----------
+### go-fmt
+Formats Go programs. It uses tabs for indentation and blanks for alignment. Alignment assumes that an editor is using a fixed-width font.
 
-#### Install
+ - Can modify files (see `-w`)
+
+| Hook ID  | Description
+|----------|------------
+| `go-fmt` | Run `'gofmt -l -d [$ARGS] $FILE'` for each staged .go file
+
+##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
 
-#### Useful Args
+##### Useful Args
 ```
--s : Try to simplify code
+-d=false : Don't display diffs
+-s       : Try to simplify code
+-w       : Update source file directly
 ```
 
-#### Help
+##### Help
  - https://godoc.org/github.com/golang/go/src/cmd/gofmt
  - `gofmt -h`
 
-------------------
-### go-imports-fix
- - Replaces `go-fmt-fix`
- - File-based
- - Modifies (fixes) files
+--------------
+### go-imports
+Updates your Go import lines, adding missing ones and removing unreferenced ones.
 
-#### Install
+ - Replaces `go-fmt`
+ - Can modify files (see `-w`)
+
+| Hook ID      | Description
+|--------------|------------
+| `go-imports` | Run `'goimports -l -d [$ARGS] $FILE'` for each staged .go file
+
+##### Install
 ```
 go get -u golang.org/x/tools/cmd/goimports
 ```
 
-#### Useful Args
+##### Useful Args
 ```
+-d=false        : Hide diffs
 -format-only    : Do not fix imports, act ONLY as go-fmt
 -local prefixes : Add imports matching prefix AFTER 3rd party packages
                   (prefixes = comma-separated list)
 -v              : Verbose logging
+-w              : Update source file directly
 ```
 
-#### Help
+##### Help
  - https://godoc.org/golang.org/x/tools/cmd/goimports
  - `goimports -h`
 
-------------------
-### go-returns-fix
+--------------
+### go-returns
+Implements a Go pretty-printer (like `go-fmt`) that also adds zero-value return values as necessary to incomplete return statements.
 
- - Replaces `go-fmt-fix`
- - Replaces `go-imports-fix` (can be disabled)
- - File-based
- - Modifies (fixes) files
+ - Replaces `go-fmt` and `go-imports`
+ - Can modify files (see `-w`)
 
-#### Install
+| Hook ID      | Description
+|--------------|------------
+| `go-returns` | Run `'goreturns -l -p -d [$ARGS] $FILE'` for each staged .go file
+
+##### Install
 ```
 go get -u github.com/sqs/goreturns
 ```
 
-#### Useful Args
+##### Useful Args
 ```
 -b              : Remove bare returns
+-d=false        : Hide diffs
 -i=false        : Disable go-imports
 -local prefixes : Add imports matching prefix AFTER 3rd party packages
                   (prefixes = comma-separated list)
 -p              : Print non-fatal type-checking errors to STDERR
+-s              : Try to simplify code
+-w              : Update source file directly
 ```
 
-#### Help
+##### Help
  - https://godoc.org/github.com/sqs/goreturns
  - `goreturns -h`
 
 -----------
 ### go-lint
+A linter for Go source code, meant to carry out the stylistic conventions put forth in [Effective Go](https://golang.org/doc/effective_go.html) and [CodeReviewComments](https://golang.org/wiki/CodeReviewComments).
 
- - File-based
+| Hook ID   | Description
+|-----------|------------
+| `go-lint` | Run `'golint -set_exit_status [$ARGS] $FILE'` for each staged .go file
 
-#### Install
+##### Install
 ```
 go get -u golang.org/x/lint/golint
 ```
 
-#### Help
+##### Help
  - https://godoc.org/golang.org/x/lint
  - `golint -h`
+ - https://golang.org/doc/effective_go.html
+ - https://golang.org/wiki/CodeReviewComments
 
 -------------
 ### go-critic
+The most opinionated Go source code linter for code audit.
 
- - File-based
+| Hook ID     | Description
+|-------------|------------
+| `go-critic` | Run `'gocritic check [$ARGS] $FILE'` for each staged .go file
 
-#### Install
+##### Install
    https://github.com/go-critic/go-critic#installation
 
-#### Useful Args
+##### Useful Args
 ```
 -enableAll        : Enable ALL checkers
 -enable checkers  : comma-separated list of checkers to be enabled
@@ -331,41 +357,36 @@ go get -u golang.org/x/lint/golint
 
 -----------------
 ### golangci-lint
+A FAST linter aggregator, with colored output, fewer false-positives, and support for yaml/toml configuration.
+
  - Manages multiple linters
  - Can replace many/most other hooks
- - Can modify files
- - File-based
+ - Can report only new issues (see `--new`)
+ - Can modify files (see `--fix`)
 
-#### File-Based Hooks
-- `golangci-lint`
-- `golangci-lint-fix`
+| Hook ID                  | Description
+|--------------------------|------------
+| `golangci-lint`          | Run `'golangci-lint run [$ARGS] $FILE'` for each staged .go file
+| `golangci-lint-mod`      | Run `'cd $(mod_root $FILE); golangci-lint run [$ARGS] ./...'` for each staged .go file
+| `golangci-lint-pkg`      | Run `'golangci-lint run [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `golangci-lint-repo-mod` |
+| `golangci-lint-repo-pkg` |
 
-#### Directory-Based Hooks
-- `golangci-lint-mod`
-- `golangci-lint-mod-fix`
-- `golangci-lint-dir`
-- `golangci-lint-dir-fix`
-- `golangci-lint-pkg`
-- `golangci-lint-pkg-fix`
-
-#### Repo-Based Hooks
-- `golangci-lint-repo`
-- `golangci-lint-repo-fix`
-
-#### Install
+##### Install
 ```
 go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 ```
-#### Useful Args
+##### Useful Args
 ```
-   --fast            : Run only fast linters (from enabled linters sets)
-   --fix             : Fix found issues (if supported by linter)
+   --config PATH     : Specify config file
+   --disable linters : Disable specific linter(s)
    --enable-all      : Enable ALL linters
    --enable linters  : Enable specific linter(s)
-   --disable linters : Disable specific linter(s)
-   --presets presets : Enable presets of linters
-   --config PATH     : Specify config file
+   --fast            : Run only fast linters (from enabled linters sets)
+   --fix             : Fix found issues (if supported by linter)
+   --new             : Show only new issues (see help for further details)
    --no-config       : don't read config file
+   --presets presets : Enable presets of linters
 ```
 **Presets**
  - `bugs`
@@ -375,11 +396,11 @@ go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
  - `style`
  - `unused`
 
-#### Help
+##### Help
  - https://github.com/golangci/golangci-lint#quick-start
  - `golangci-lint run -h`
 
-#### Config File Help:
+##### Config File Help:
  - https://github.com/golangci/golangci-lint#config-file
  - `golangci-lint config -h`
 

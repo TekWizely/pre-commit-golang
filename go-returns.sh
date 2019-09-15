@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-export GO111MODULE=off
-
 FILES=()
 
 # Build file list while looking for optional argument marker
@@ -20,8 +18,8 @@ if [ $# -gt 0 ]; then
 fi
 
 errCode=0
-for sub in $(echo "${FILES}" | xargs -n1 dirname | sort -u); do
-	go vet "$@" "./${sub}"
+for file in "${FILES}"; do
+	goreturns -l -p -d "$@" "${file}"
 	if [ $? -ne 0 ]; then
 		errCode=1
 	fi

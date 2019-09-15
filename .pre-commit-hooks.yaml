@@ -1,35 +1,24 @@
 # ==============================================================================
 # go-build-mod
-#   * Directory-Based
+#   * Folder-Based
+#   * Recursive
 #   * Targets first parent folder with a go.mod file
 #   * Executes if any .go files modified
+#   * Executes if go.mod modified
 # ==============================================================================
 -   id: go-build-mod
     name: 'go-build-mod'
     entry: go-build-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
-    description: "Run 'cd $(mod_root $FILE); go build ./...' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# go-build-dir
-#   * Directory-Based
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: go-build-dir
-    name: 'go-build-dir'
-    entry: go-build-dir.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'go build ./$(dirname $FILE)' for each staged .go file"
+    description: "Run 'cd $(mod_root $FILE); go build [$ARGS] ./...' for each staged .go file"
     pass_filenames: true
     require_serial: true
 
 # ==============================================================================
 # go-build-pkg
-#   * Directory-Based
+#   * Folder-Based
+#   * Targets folder containing staged file
 #   * Executes if any .go files modified
 # ==============================================================================
 -   id: go-build-pkg
@@ -37,83 +26,132 @@
     entry: go-build-pkg.sh
     types: [go]
     language: 'script'
-    description: "Run 'go build $(go list)/$(dirname $FILE)' for each staged .go file"
+    description: "Run 'go build [$ARGS] ./$(dirname $FILE)' for each staged .go file"
     pass_filenames: true
     require_serial: true
 
 # ==============================================================================
-# go-build-repo
-#   * Repo-based
-#   * No Target Specified
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: go-build-repo
-    name: 'go-build-repo'
-    entry: go-build-repo.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'go build $ARGS' in repo root folder"
-    pass_filenames: false
-
-# ==============================================================================
-# go-build-repo-dir
+# go-build-repo-mod
 #   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
 #   * Executes if any .go files modified
+#   * Executes if go.mod modified
 # ==============================================================================
--   id: go-build-repo-dir
-    name: 'go-build-repo-dir'
-    entry: go-build-repo-dir.sh
-    types: [go]
+-   id: go-build-repo-mod
+    name: 'go-build-repo-mod'
+    entry: go-build-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
-    description: "Run 'go build ./...' in repo root folder"
+    description: "Run 'cd $(mod_root); go build [$ARGS] ./...' for each module in the repo"
     pass_filenames: false
 
 # ==============================================================================
 # go-build-repo-pkg
 #   * Repo-Based
+#   * Recursive
 #   * Executes if any .go files modified
-#   * Expects $(go list) in repo root to produce top-level package name
 # ==============================================================================
 -   id: go-build-repo-pkg
     name: 'go-build-repo-pkg'
     entry: go-build-repo-pkg.sh
     types: [go]
     language: 'script'
-    description: "Run 'go build $(go list)/...' in repo root folder"
+    description: "Run 'go build [$ARGS] ./...' in repo root folder"
     pass_filenames: false
 
 # ==============================================================================
+# go-critic
+#   * File-based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-critic
+    name: 'go-critic'
+    entry: go-critic.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'gocritic check [$ARGS] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
+# go-fmt
+#   * File-based
+#   * Executes if any .go files modified
+# NOTES:
+#   `go fmt` delegates to `gofmt`, so we'll invote `gofmt` directly.
+# ==============================================================================
+-   id: go-fmt
+    name: 'go-fmt'
+    entry: go-fmt.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'gofmt -l -d [$ARGS] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
+# go-imports
+#   * File-based
+#   * Executes if any .go files modified
+# NOTES:
+#   Replaces go-fmt-fix
+# ==============================================================================
+-   id: go-imports
+    name: 'go-imports'
+    entry: go-imports.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'goimports -l -d [$ARGS] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
+# go-lint
+#   * File-based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-lint
+    name: 'go-lint'
+    entry: go-lint.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'golint -set_exit_status [$ARGS] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
+# go-returns
+#   * File-based
+#   * Executes if any .go files modified
+# NOTES:
+#   Replaces go-imports-fix & go-fmt-fix
+# ==============================================================================
+-   id: go-returns
+    name: 'go-returns'
+    entry: go-returns.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'goreturns -l -p -d [$ARGS] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
 # go-test-mod
-#   * Directory-Based
+#   * Folder-Based
+#   * Recursive
 #   * Targets first parent folder with a go.mod file
 #   * Executes if any .go files modified
+#   * Executes if go.mod modified
 # ==============================================================================
 -   id: go-test-mod
     name: 'go-test-mod'
     entry: go-test-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
-    description: "Run 'cd $(mod_root $FILE); go test ./...' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# go-test-dir
-#   * Directory-Based
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: go-test-dir
-    name: 'go-test-dir'
-    entry: go-test-dir.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'go test ./$(dirname $FILE)' for each staged .go file"
+    description: "Run 'cd $(mod_root $FILE); go test [$ARGS] ./...' for each staged .go file"
     pass_filenames: true
     require_serial: true
 
 # ==============================================================================
 # go-test-pkg
-#   * Directory-Based
+#   * Folder-Based
+#   * Targets folder containing staged file
 #   * Executes if any .go files modified
 # ==============================================================================
 -   id: go-test-pkg
@@ -121,54 +159,106 @@
     entry: go-test-pkg.sh
     types: [go]
     language: 'script'
-    description: "Run 'go test $(go list)/$(dirname $FILE)' for each staged .go file"
+    description: "Run 'go test [$ARGS] ./$(dirname $FILE)' for each staged .go file"
     pass_filenames: true
     require_serial: true
 
 # ==============================================================================
-# go-test-repo
-#   * Repo-based
-#   * No Target Specified
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: go-test-repo
-    name: 'go-test-repo'
-    entry: go-test-repo.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'go test $ARGS' in repo root folder"
-    pass_filenames: false
-
-# ==============================================================================
-# go-test-repo-dir
+# go-test-repo-mod
 #   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
 #   * Executes if any .go files modified
+#   * Executes if go.mod modified
 # ==============================================================================
--   id: go-test-repo-dir
-    name: 'go-test-repo-dir'
-    entry: go-test-repo-dir.sh
-    types: [go]
+-   id: go-test-repo-mod
+    name: 'go-test-repo-mod'
+    entry: go-test-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
-    description: "Run 'go test ./...' in repo root folder"
+    description: "Run 'cd $(mod_root); go test [$ARGS] ./...' for each module in the repo"
     pass_filenames: false
 
 # ==============================================================================
 # go-test-repo-pkg
 #   * Repo-Based
+#   * Recursive
 #   * Executes if any .go files modified
-#   * Expects $(go list) in repo root to produce top-level package name
 # ==============================================================================
 -   id: go-test-repo-pkg
     name: 'go-test-repo-pkg'
     entry: go-test-repo-pkg.sh
     types: [go]
     language: 'script'
-    description: "Run 'go test $(go list)/...' in repo root folder"
+    description: "Run 'go test [$ARGS] ./...' in repo root folder"
+    pass_filenames: false
+
+# ==============================================================================
+# go-vet-mod
+#   * Folder-Based
+#   * Recursive
+#   * Targets first parent folder with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-vet-mod
+    name: 'go-vet-mod'
+    entry: go-vet-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    language: 'script'
+    description: "Run 'cd $(mod_root $FILE); go vet [$ARGS] ./...' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-vet-pkg
+#   * Folder-Based
+#   * Targets folder containing staged file
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-vet-pkg
+    name: 'go-vet-pkg'
+    entry: go-vet-pkg.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'go vet [$ARGS] ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-vet-repo-mod
+#   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-vet-repo-mod
+    name: 'go-vet-repo-mod'
+    entry: go-vet-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    language: 'script'
+    description: "Run 'cd $(mod_root); go vet [$ARGS] ./...' for each module in the repo"
+    pass_filenames: false
+
+# ==============================================================================
+# go-vet-repo-pkg
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-vet-repo-pkg
+    name: 'go-vet-repo-pkg'
+    entry: go-vet-repo-pkg.sh
+    types: [go]
+    language: 'script'
+    description: "Run 'go vet [$ARGS] ./...' in repo root folder"
     pass_filenames: false
 
 # ==============================================================================
 # go-vet
 #   * File-based
+#   * Executes if any .go files modified
 # NOTES:
 #   `go vet` appears to work on single files when given them as args.
 # ==============================================================================
@@ -177,165 +267,75 @@
     entry: go-vet.sh
     types: [go]
     language: 'script'
-    description: "Run 'go vet $FILE' for each staged .go file"
+    description: "Run 'go vet [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
 
 # ==============================================================================
-# go-vet-mod
-#   * Directory-Based
+# golangci-lint-mod
+#   * Folder-Based
+#   * Recursive
 #   * Targets first parent folder with a go.mod file
 #   * Executes if any .go files modified
+#   * Executes if go.mod modified
 # ==============================================================================
--   id: go-vet-mod
-    name: 'go-vet-mod'
-    entry: go-vet-mod.sh
+-   id: golangci-lint-mod
+    name: 'golangci-lint-mod'
+    entry: golangci-lint-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
-    description: "Run 'cd $(mod_root $FILE); go vet ./...' for each staged .go file"
+    description: "Run 'cd $(mod_root $FILE); golangci-lint run [$ARGS] ./...' for each staged .go file"
     pass_filenames: true
     require_serial: true
 
 # ==============================================================================
-# go-vet-dir
-#   * Directory-Based
+# golangci-lint-pkg
+#   * Folder-Based
+#   * Targets folder containing staged file
 #   * Executes if any .go files modified
 # ==============================================================================
--   id: go-vet-dir
-    name: 'go-vet-dir'
-    entry: go-vet-dir.sh
+-   id: golangci-lint-pkg
+    name: 'golangci-lint-pkg'
+    entry: golangci-lint-pkg.sh
     types: [go]
     language: 'script'
-    description: "Run 'go vet ./$(dirname $FILE)' for each staged .go file"
+    description: "Run 'golangci-lint run [$ARGS] ./$(dirname $FILE)' for each staged .go file"
     pass_filenames: true
     require_serial: true
 
 # ==============================================================================
-# go-vet-pkg
-#   * Directory-Based
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: go-vet-pkg
-    name: 'go-vet-pkg'
-    entry: go-vet-pkg.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'go vet $(go list)/$(dirname $FILE)' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# go-vet-repo
-#   * Repo-based
-#   * No Target Specified
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: go-vet-repo
-    name: 'go-vet-repo'
-    entry: go-vet-repo.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'go vet $ARGS' in repo root folder"
-    pass_filenames: false
-
-# ==============================================================================
-# go-vet-repo-dir
+# golangci-lint-repo-mod
 #   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
 #   * Executes if any .go files modified
+#   * Executes if go.mod modified
 # ==============================================================================
--   id: go-vet-repo-dir
-    name: 'go-vet-repo-dir'
-    entry: go-vet-repo-dir.sh
-    types: [go]
+-   id: golangci-lint-repo-mod
+    name: 'golangci-lint-repo-mod'
+    entry: golangci-lint-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
-    description: "Run 'go vet ./...' in repo root folder"
+    description: "Run 'cd $(mod_root); golangci-lint run [$ARGS] ./...' for each module in the repo"
     pass_filenames: false
 
 # ==============================================================================
-# go-vet-repo-pkg
+# golangci-lint-repo-pkg
 #   * Repo-Based
+#   * Recursive
 #   * Executes if any .go files modified
-#   * Expects $(go list) in repo root to produce top-level package name
 # ==============================================================================
--   id: go-vet-repo-pkg
-    name: 'go-vet-repo-pkg'
-    entry: go-vet-repo-pkg.sh
+-   id: golangci-lint-repo-pkg
+    name: 'golangci-lint-repo-pkg'
+    entry: golangci-lint-repo-pkg.sh
     types: [go]
     language: 'script'
-    description: "Run 'go vet $(go list)/...' in repo root folder"
+    description: "Run 'golangci-lint run [$ARGS] ./...' in repo root folder"
     pass_filenames: false
-
-# ==============================================================================
-# go-fmt-fix
-#   * File-based
-#   * Modifies files
-# NOTES:
-#   `go fmt` delegates to `gofmt`, so we'll invote `gofmt` directly.
-# ==============================================================================
--   id: go-fmt-fix
-    name: 'go-fmt-fix'
-    entry: go-fmt-fix.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'gofmt -l -w $FILE' for each staged .go file"
-    pass_filenames: true
-
-# ==============================================================================
-# go-imports-fix
-#   * File-based
-#   * Modifies files
-# NOTES:
-#   Replaces go-fmt-fix
-# ==============================================================================
--   id: go-imports-fix
-    name: 'go-imports-fix'
-    entry: go-imports-fix.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'goimports -l -w $FILE' for each staged .go file"
-    pass_filenames: true
-
-# ==============================================================================
-# go-returns-fix
-#   * File-based
-#   * Modifies files
-# NOTES:
-#   Replaces go-imports-fix & go-fmt-fix
-# ==============================================================================
--   id: go-returns-fix
-    name: 'go-returns-fix'
-    entry: go-returns-fix.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'goreturns -p -l -w $FILE' for each staged go file"
-    pass_filenames: true
-
-# ==============================================================================
-# go-lint
-#   * File-based
-# ==============================================================================
--   id: go-lint
-    name: 'go-lint'
-    entry: go-lint.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'golint $FILE' for each staged .go file"
-    pass_filenames: true
-
-# ==============================================================================
-# go-critic
-#   * File-based
-# ==============================================================================
--   id: go-critic
-    name: 'go-critic'
-    entry: go-critic.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'gocritic check $FILE' for each staged .go file"
-    pass_filenames: true
 
 # ==============================================================================
 # golangci-lint
 #   * File-based
+#   * Executes if any .go files modified
 # NOTES:
 #   `golangci-lint` appears to work on single files when given them as args.
 # ==============================================================================
@@ -344,138 +344,5 @@
     entry: golangci-lint.sh
     types: [go]
     language: 'script'
-    description: "Run 'golangci-lint run $FILE' for each staged .go file"
+    description: "Run 'golangci-lint run [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
-
-# ==============================================================================
-# golangci-lint-fix
-#   * File-based
-#   * Modifies files
-# NOTES:
-#   `golangci-lint` appears to work on single files when given them as args.
-# ==============================================================================
--   id: golangci-lint-fix
-    name: 'golangci-lint-fix'
-    entry: golangci-lint-fix.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'golangci-lint run --fix $FILE' for each staged .go file"
-    pass_filenames: true
-
-# ==============================================================================
-# golangci-lint-mod
-#   * Directory-Based
-#   * Targets first parent folder with a go.mod file
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: golangci-lint-mod
-    name: 'golangci-lint-mod'
-    entry: golangci-lint-mod.sh
-    files: '(\.go$)|(\bgo\.mod$)'
-    language: 'script'
-    description: "Run 'cd $(mod_root $FILE); golangci-lint run ./...' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# golangci-lint-mod-fix
-#   * Directory-Based
-#   * Targets first parent folder with a go.mod file
-#   * Modifies files
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: golangci-lint-mod-fix
-    name: 'golangci-lint-mod-fix'
-    entry: golangci-lint-mod-fix.sh
-    files: '(\.go$)|(\bgo\.mod$)'
-    language: 'script'
-    description: "Run 'cd $(mod_root $FILE); golangci-lint run --fix ./...' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# golangci-lint-dir
-#   * Directory-Based
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: golangci-lint-dir
-    name: 'golangci-lint-dir'
-    entry: golangci-lint-dir.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'golangci-lint run ./$(dirname $FILE)' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# golangci-lint-dir-fix
-#   * Directory-Based
-#   * Modifies files
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: golangci-lint-dir-fix
-    name: 'golangci-lint-dir-fix'
-    entry: golangci-lint-dir-fix.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'golangci-lint run --fix ./$(dirname $FILE)' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# golangci-lint-pkg
-#   * Directory-Based
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: golangci-lint-pkg
-    name: 'golangci-lint-pkg'
-    entry: golangci-lint-pkg.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'golangci-lint run $(go list)/$(dirname $FILE)' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# golangci-lint-pkg-fix
-#   * Directory-Based
-#   * Modifies files
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: golangci-lint-pkg-fix
-    name: 'golangci-lint-pkg-fix'
-    entry: golangci-lint-pkg-fix.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'golangci-lint run --fix $(go list)/$(dirname $FILE)' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# golangci-lint-repo
-#   * Repo-based
-#   * No Target Specified
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: golangci-lint-repo
-    name: 'golangci-lint-repo'
-    entry: golangci-lint-repo.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'golangci-lint run' in repo root folder"
-    pass_filenames: false
-
-# ==============================================================================
-# golangci-lint-repo-fix
-#   * Repo-based
-#   * No Target Specified
-#   * Executes if any .go files modified
-#   * Modifies files
-# ==============================================================================
--   id: golangci-lint-repo-fix
-    name: 'golangci-lint-repo-fix'
-    entry: golangci-lint-repo-fix.sh
-    types: [go]
-    language: 'script'
-    description: "Run 'golangci-lint run --fix' in repo root folder"
-    pass_filenames: false
