@@ -369,8 +369,8 @@ A FAST linter aggregator, with colored output, fewer false-positives, and suppor
 | `golangci-lint`          | Run `'golangci-lint run [$ARGS] $FILE'` for each staged .go file
 | `golangci-lint-mod`      | Run `'cd $(mod_root $FILE); golangci-lint run [$ARGS] ./...'` for each staged .go file
 | `golangci-lint-pkg`      | Run `'golangci-lint run [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `golangci-lint-repo-mod` |
-| `golangci-lint-repo-pkg` |
+| `golangci-lint-repo-mod` | Run `'cd $(mod_root); golangci-lint run [$ARGS] ./...'` for each module in the repo
+| `golangci-lint-repo-pkg` | Run `'golangci-lint run [$ARGS] ./...'` in repo root folder
 
 ##### Install
 ```
