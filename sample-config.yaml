@@ -53,15 +53,15 @@ repos:
     #
     # Useful Hook Parameters:
     #   -   id: hook-id
-    #       args: ["--", arg1, arg2, ...] # Pass options (after "--")
+    #       args: [arg1, arg2, ..., '--'] # Pass options (end with '--')
     #       always_run: true              # Run even if no matching files staged
     #       alias: hook-alias             # Create an alias
     #
     # Passing Options To Hooks:
     #   You can pass options into individual hooks to customize tool behavior.
-    #   Use a leading `"--"` argument to separate the hook options from the
+    #   Use a trailing '--' argument to separate the hook options from the
     #   modified-file list that Pre-Commit passes into the hook.
-    #   For repo-based hooks, the `--` is optional.
+    #   For repo-based hooks, the '--' is optional.
     #
     # Always Run:
     #   By default, hooks ONLY run when matching file types are staged.
