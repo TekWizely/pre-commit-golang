@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+cmd=(go build)
+
 export GO111MODULE=on
 
 # Walks up the file path looking for go.mod
@@ -22,26 +24,35 @@ function find_module_roots() {
 }
 
 FILES=()
-
-# Build file list while looking for optional argument marker
+# Build potential options list (may just be files)
 #
 while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ]; do
 	FILES+=("$1")
 	shift
 done
 
-# Remove argument marker if present
+OPTIONS=()
+# If '--' next, then files = options
 #
 if [ $# -gt 0 ]; then
 	if [ "$1" == "-" ] || [ "$1" == "--" ]; then
 		shift
+		OPTIONS=("${FILES[@]}")
+		FILES=()
 	fi
 fi
 
+# Any remaining items are files
+#
+while [ $# -gt 0 ]; do
+	FILES+=("$1")
+	shift
+done
+
 errCode=0
-for sub in $(find_module_roots "${FILES}" | sort -u) ; do
+for sub in $(find_module_roots "${FILES[@]}" | sort -u) ; do
 	pushd "${sub}" >/dev/null
-	go build "$@" ./...
+	"${cmd[@]}" "${OPTIONS[@]}" ./...
 	if [ $? -ne 0 ]; then
 		errCode=1
 	fi

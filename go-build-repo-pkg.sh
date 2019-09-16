@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
+cmd=(go build)
+
 export GO111MODULE=off
 
-# '-' and '--' are optional argument markers for parity with file scripts
-# Remove them if present
+OPTIONS=()
+# Build options list, ignoring '-', '--', and anything after
 #
-if [ $# -gt 0 ]; then
-	if [ "$1" == "-" ] || [ "$1" == "--" ]; then
-		shift
-	fi
-fi
+while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ]; do
+	OPTIONS+=("$1")
+	shift
+done
 
-go build "$@" ./...
+"${cmd[@]}" "${OPTIONS[@]}" ./...

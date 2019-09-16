@@ -283,7 +283,7 @@ Implements a Go pretty-printer (like `go-fmt`) that also adds zero-value return 
 
 | Hook ID      | Description
 |--------------|------------
-| `go-returns` | Run `'goreturns -l -p -d [$ARGS] $FILE'` for each staged .go file
+| `go-returns` | Run `'goreturns -l -d [$ARGS] $FILE'` for each staged .go file
 
 ##### Install
 ```
