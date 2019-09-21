@@ -33,6 +33,7 @@ for file in "${FILES[@]}"; do
 	output=$("${cmd[@]}" "${OPTIONS[@]}" "${file}" 2>&1)
 	if [ ! -z "${output}" ]; then
 		echo -n "${output}"
+		echo "" # newline
 		errCode=1
 	fi
 done
