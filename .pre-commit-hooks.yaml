@@ -10,6 +10,7 @@
     name: 'go-build-mod'
     entry: go-build-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); go build -o /dev/null [$ARGS] ./...' for each staged .go file"
     pass_filenames: true
@@ -25,6 +26,7 @@
     name: 'go-build-pkg'
     entry: go-build-pkg.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'go build -o /dev/null [$ARGS] ./$(dirname $FILE)' for each staged .go file"
     pass_filenames: true
@@ -42,6 +44,7 @@
     name: 'go-build-repo-mod'
     entry: go-build-repo-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root); go build -o /dev/null [$ARGS] ./...' for each module in the repo"
     pass_filenames: false
@@ -56,6 +59,7 @@
     name: 'go-build-repo-pkg'
     entry: go-build-repo-pkg.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'go build -o /dev/null [$ARGS] ./...' in repo root folder"
     pass_filenames: false
@@ -69,6 +73,7 @@
     name: 'go-critic'
     entry: go-critic.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'gocritic check [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
@@ -84,6 +89,7 @@
     name: 'go-fmt'
     entry: go-fmt.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'gofmt -l -d [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
@@ -99,6 +105,7 @@
     name: 'go-imports'
     entry: go-imports.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'goimports -l -d [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
@@ -112,6 +119,7 @@
     name: 'go-lint'
     entry: go-lint.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'golint -set_exit_status [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
@@ -127,6 +135,7 @@
     name: 'go-returns'
     entry: go-returns.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'goreturns -l -d [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
@@ -143,6 +152,7 @@
     name: 'go-test-mod'
     entry: go-test-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); go test [$ARGS] ./...' for each staged .go file"
     pass_filenames: true
@@ -158,6 +168,7 @@
     name: 'go-test-pkg'
     entry: go-test-pkg.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'go test [$ARGS] ./$(dirname $FILE)' for each staged .go file"
     pass_filenames: true
@@ -175,6 +186,7 @@
     name: 'go-test-repo-mod'
     entry: go-test-repo-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root); go test [$ARGS] ./...' for each module in the repo"
     pass_filenames: false
@@ -189,6 +201,7 @@
     name: 'go-test-repo-pkg'
     entry: go-test-repo-pkg.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'go test [$ARGS] ./...' in repo root folder"
     pass_filenames: false
@@ -205,6 +218,7 @@
     name: 'go-vet-mod'
     entry: go-vet-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); go vet [$ARGS] ./...' for each staged .go file"
     pass_filenames: true
@@ -220,6 +234,7 @@
     name: 'go-vet-pkg'
     entry: go-vet-pkg.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'go vet [$ARGS] ./$(dirname $FILE)' for each staged .go file"
     pass_filenames: true
@@ -237,6 +252,7 @@
     name: 'go-vet-repo-mod'
     entry: go-vet-repo-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root); go vet [$ARGS] ./...' for each module in the repo"
     pass_filenames: false
@@ -251,6 +267,7 @@
     name: 'go-vet-repo-pkg'
     entry: go-vet-repo-pkg.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'go vet [$ARGS] ./...' in repo root folder"
     pass_filenames: false
@@ -266,6 +283,7 @@
     name: 'go-vet'
     entry: go-vet.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'go vet [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
@@ -282,6 +300,7 @@
     name: 'golangci-lint-mod'
     entry: golangci-lint-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); golangci-lint run [$ARGS] ./...' for each staged .go file"
     pass_filenames: true
@@ -297,6 +316,7 @@
     name: 'golangci-lint-pkg'
     entry: golangci-lint-pkg.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'golangci-lint run [$ARGS] ./$(dirname $FILE)' for each staged .go file"
     pass_filenames: true
@@ -314,6 +334,7 @@
     name: 'golangci-lint-repo-mod'
     entry: golangci-lint-repo-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root); golangci-lint run [$ARGS] ./...' for each module in the repo"
     pass_filenames: false
@@ -328,6 +349,7 @@
     name: 'golangci-lint-repo-pkg'
     entry: golangci-lint-repo-pkg.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'golangci-lint run [$ARGS] ./...' in repo root folder"
     pass_filenames: false
@@ -343,6 +365,7 @@
     name: 'golangci-lint'
     entry: golangci-lint.sh
     types: [go]
+    exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'golangci-lint run [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
