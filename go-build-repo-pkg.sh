@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-cmd=(go build)
+cmd=(go build -o /dev/null)
 
 export GO111MODULE=off
 

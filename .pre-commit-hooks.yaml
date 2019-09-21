@@ -11,7 +11,7 @@
     entry: go-build-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
-    description: "Run 'cd $(mod_root $FILE); go build [$ARGS] ./...' for each staged .go file"
+    description: "Run 'cd $(mod_root $FILE); go build -o /dev/null [$ARGS] ./...' for each staged .go file"
     pass_filenames: true
     require_serial: true
 
@@ -26,7 +26,7 @@
     entry: go-build-pkg.sh
     types: [go]
     language: 'script'
-    description: "Run 'go build [$ARGS] ./$(dirname $FILE)' for each staged .go file"
+    description: "Run 'go build -o /dev/null [$ARGS] ./$(dirname $FILE)' for each staged .go file"
     pass_filenames: true
     require_serial: true
 
@@ -43,7 +43,7 @@
     entry: go-build-repo-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
     language: 'script'
-    description: "Run 'cd $(mod_root); go build [$ARGS] ./...' for each module in the repo"
+    description: "Run 'cd $(mod_root); go build -o /dev/null [$ARGS] ./...' for each module in the repo"
     pass_filenames: false
 
 # ==============================================================================
@@ -57,7 +57,7 @@
     entry: go-build-repo-pkg.sh
     types: [go]
     language: 'script'
-    description: "Run 'go build [$ARGS] ./...' in repo root folder"
+    description: "Run 'go build -o /dev/null [$ARGS] ./...' in repo root folder"
     pass_filenames: false
 
 # ==============================================================================

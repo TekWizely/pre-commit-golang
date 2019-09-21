@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cmd=(go build)
+cmd=(go build -o /dev/null)
 
 export GO111MODULE=on
 

@@ -172,10 +172,10 @@ Compiles packages, along with their dependencies, but does not install the resul
 
 | Hook ID             | Description
 |---------------------|------------
-| `go-build-mod`      | Run `'cd $(mod_root $FILE); go build [$ARGS] ./...'` for each staged .go file
-| `go-build-pkg`      | Run `'go build [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `go-build-repo-mod` | Run `'cd $(mod_root); go build [$ARGS] ./...'` for each module in the repo
-| `go-build-repo-pkg` | Run `'go build [$ARGS] ./...'` in repo root folder
+| `go-build-mod`      | Run `'cd $(mod_root $FILE); go build -o /dev/null [$ARGS] ./...'` for each staged .go file
+| `go-build-pkg`      | Run `'go build -o /dev/null [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `go-build-repo-mod` | Run `'cd $(mod_root); go build -o /dev/null [$ARGS] ./...'` for each module in the repo
+| `go-build-repo-pkg` | Run `'go build -o /dev/null [$ARGS] ./...'` in repo root folder
 
 ##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
