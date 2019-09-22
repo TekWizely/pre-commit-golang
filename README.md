@@ -20,9 +20,11 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # Visit the project home page to learn more about the available Hooks,
     # including useful arguments you might want to pass into them.
     #
-    # When passing options to hooks, use a trailing '--' argument to separate
-    # the hook options from the modified-file list that Pre-Commit passes in.
-    # For repo-based hooks, the '--' is optional.
+    # NOTE: When passing options to hooks, if your options contain a reference
+    #       to an existing file, then you will need to use a trailing '--'
+    #       argument to separate the hook options from the modified-file list
+    #       that Pre-Commit passes into the hook.
+    #       For repo-based hooks, '--' is not needed.
     #
     # Consider adding aliases to longer-named hooks for easier CLI usage.
     # ==========================================================================
@@ -125,7 +127,7 @@ For file and repo-based hooks, this isn't an issue, but for module and package-b
 ### Useful Hook Parameters
 ```
 -   id: hook-id
-    args: [arg1, arg2, ..., '--'] # Pass options (end with '--')
+    args: [arg1, arg2, ..., '--'] # Pass options ('--' is optional)
     always_run: true              # Run even if no matching files staged
     alias: hook-alias             # Create an alias
 ```
@@ -133,9 +135,11 @@ For file and repo-based hooks, this isn't an issue, but for module and package-b
 #### Passing Options To Hooks
 You can pass options into individual hooks to customize tool behavior.
 
-Use a trailing `'--'` argument to separate the hook options from the modified-file list that Pre-Commit passes into the hook.
+If your options contain a reference to an existing file, then you
+will need to use a trailing `'--'` argument to separate the hook options from
+the modified-file list that Pre-Commit passes into the hook.
 
-For repo-based hooks, the `'--'` is optional
+**NOTE:** For repo-based hooks, `'--'` is not needed.
 
 See each hook's description below for some popular options that you might want to use.
 
