@@ -2,26 +2,35 @@
 
 cmd=(golint -set_exit_status)
 
+OPTIONS=()
+# If arg doesn't pass [ -f ] check, then it is assumed to be an option
+#
+while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ] && [ ! -f "$1" ]; do
+	OPTIONS+=("$1")
+	shift
+done
+
 FILES=()
-# Build potential options list (may just be files)
+# Assume start of file list (may still be options)
 #
 while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ]; do
 	FILES+=("$1")
 	shift
 done
 
-OPTIONS=()
 # If '--' next, then files = options
 #
 if [ $# -gt 0 ]; then
 	if [ "$1" == "-" ] || [ "$1" == "--" ]; then
 		shift
-		OPTIONS=("${FILES[@]}")
+		# Append to previous options
+		#
+		OPTIONS=("${OPTIONS[@]}" "${FILES[@]}")
 		FILES=()
 	fi
 fi
 
-# Any remaining items are files
+# Any remaining arguments are assumed to be files
 #
 while [ $# -gt 0 ]; do
 	FILES+=("$1")
