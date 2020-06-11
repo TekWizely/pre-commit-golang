@@ -170,6 +170,21 @@ Consider adding aliases to longer-named hooks for easier CLI usage.
  - GolangCI-Lint
    - [golangci-lint](#golangci-lint)
 
+### Autoformat
+All three formatters (`gofmt`, `gotimports` & `goreturns`) support the `-w` option.
+If set, the tool automatically applies the formatting diffs to the files.
+
+You could, of course, add this option as hook parameter in the `.pre-commit-config.yaml`.
+But you might prefer not to actually modify your working directory during a commit.
+
+**Special feature:** When you run one of these from the command line, you can set the `FORMAT` environment variable.
+
+```shell
+FORMAT= pre-commit run go-returns
+```
+
+This is a work-around for pre-commit not allowing to pass arguments to hooks.
+
 ------------
 ### go-build
 Compiles packages, along with their dependencies, but does not install the results.

@@ -10,6 +10,12 @@ while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ] && [ ! -f "$1" ]; do
 	shift
 done
 
+# If env FORMAT is set, then files are also formatted
+#
+if [ -z ${FORMAT+x} ]; then
+	OPTIONS+=("-w")
+fi
+
 FILES=()
 # Assume start of file list (may still be options)
 #
