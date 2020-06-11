@@ -171,7 +171,7 @@ Consider adding aliases to longer-named hooks for easier CLI usage.
    - [golangci-lint](#golangci-lint)
 
 ### Autoformat
-All three formatters (`gofmt`, `gotimports` & `goreturns`) support the `-w` option.
+All three formatters (`gofmt`, `goimports` & `goreturns`) support the `-w` option.
 If set, the tool automatically applies the formatting diffs to the files.
 
 You could, of course, add this option as hook parameter in the `.pre-commit-config.yaml`.
