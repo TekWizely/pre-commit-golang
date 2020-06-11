@@ -174,7 +174,7 @@ Consider adding aliases to longer-named hooks for easier CLI usage.
 In case you want to give pre-commit a double use as a task runner, the following example provides:
 
 - Checks only variant during pre-commit checks
-- Modifying variant when run with `pre-commit go-returns-write`
+- Modifying variant when run with `pre-commit --hook-type manual go-returns-write`
 
 ```
     hooks:
