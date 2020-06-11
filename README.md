@@ -179,13 +179,10 @@ In case you want to give pre-commit a double use as a task runner, the following
 ```
     hooks:
     -   id: go-returns
+    -   id: go-returns
         alias: go-returns-write
         stages: [manual]
         args: [-w]
-    -   id: go-returns
-        alias: go-returns-ro
-        stages: [commit]
-        args: []
 ```
 
 ------------
