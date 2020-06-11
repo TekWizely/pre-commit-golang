@@ -170,6 +170,24 @@ Consider adding aliases to longer-named hooks for easier CLI usage.
  - GolangCI-Lint
    - [golangci-lint](#golangci-lint)
 
+### Autoformatting
+In case you want to give pre-commit a double use as a task runner, the following example provides:
+
+- Checks only variant during pre-commit checks
+- Modifying variant when run with `pre-commit go-returns-write`
+
+```
+    hooks:
+    -   id: go-returns
+        alias: go-returns-write
+        stages: [manual]
+        args: [-w]
+    -   id: go-returns
+        alias: go-returns-ro
+        stages: [commit]
+        args: []
+```
+
 ------------
 ### go-build
 Compiles packages, along with their dependencies, but does not install the results.
