@@ -15,7 +15,7 @@ done
 errCode=0
 # Assume parent folder of go.mod is module root folder
 #
-for sub in $(find . -name go.mod | xargs -n1 dirname | sort -u) ; do
+for sub in $(find . -name go.mod -not -path './vendor/*' | xargs -n1 dirname | sort -u) ; do
 	pushd "${sub}" >/dev/null
 	"${cmd[@]}" "${OPTIONS[@]}" ./...
 	if [ $? -ne 0 ]; then
