@@ -54,6 +54,13 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: go-vet-repo-mod
     -   id: go-vet-repo-pkg
     #
+    # GoSec
+    #
+    -   id: go-sec-mod
+    -   id: go-sec-pkg
+    -   id: go-sec-repo-mod
+    -   id: go-sec-repo-pkg
+    #
     # Formatters
     #
     -   id: go-fmt
@@ -160,6 +167,7 @@ Consider adding aliases to longer-named hooks for easier CLI usage.
    - [go-build](#go-build)
    - [go-test](#go-test)
    - [go-vet](#go-vet)
+   - [go-sec](#go-sec)
  - Formatters
    - [go-fmt](#go-fmt)
    - [go-imports](#go-imports)
@@ -194,10 +202,10 @@ Automates testing, printing a summary of test resutls.
 
 | Hook ID            | Description
 |--------------------|------------
-| `go-test-mod`      | Run `'cd $(mod_root $FILE); go test [$ARGS] ./...'` for each staged .go file
-| `go-test-pkg`      | Run `'go test [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `go-test-repo-mod` | Run `'cd $(mod_root); go test [$ARGS] ./...'` for each module in the repo
-| `go-test-repo-pkg` | Run `'go test [$ARGS] ./...'` in repo root folder
+| `go-test-mod`      | Run `'cd $(mod_root $FILE); gosec [$ARGS] ./...'` for each staged .go file
+| `go-test-pkg`      | Run `'gosec [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `go-test-repo-mod` | Run `'cd $(mod_root); gosec [$ARGS] ./...'` for each module in the repo
+| `go-test-repo-pkg` | Run `'gosec [$ARGS] ./...'` in repo root folder
 
 ##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
@@ -205,6 +213,26 @@ Comes with Golang ( [golang.org](https://golang.org/) )
 ##### Help
  - https://golang.org/cmd/go/#hdr-Test_packages
  - `go help test`
+
+-----------
+### go-sec
+Inspects source code for security problems by scanning the Go AST.
+
+| Hook ID           | Description
+|-------------------|------------
+| `go-sec-mod`      | Run `'cd $(mod_root $FILE); gosec [$ARGS] ./...'` for each staged .go file
+| `go-sec-pkg`      | Run `'gosec [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `go-sec-repo-mod` | Run `'cd $(mod_root); gosec [$ARGS] ./...'` for each module in the repo
+| `go-sec-repo-pkg` | Run `'gosec [$ARGS] ./...'` in repo root folder
+
+##### Install
+```
+go get github.com/securego/gosec/v2/cmd/gosec
+```
+
+##### Help
+ - https://github.com/securego/gosec#usage
+ - `gosec (no args)`
 
 ----------
 ### go-vet

@@ -97,6 +97,13 @@ repos:
     -   id: go-vet-repo-mod
     -   id: go-vet-repo-pkg
     #
+    # GoSec
+    #
+    -   id: go-sec-mod
+    -   id: go-sec-pkg
+    -   id: go-sec-repo-mod
+    -   id: go-sec-repo-pkg
+    #
     # Formatters
     #
     -   id: go-fmt

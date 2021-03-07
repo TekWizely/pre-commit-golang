@@ -141,6 +141,72 @@
     pass_filenames: true
 
 # ==============================================================================
+# go-sec-mod
+#   * Folder-Based
+#   * Recursive
+#   * Targets first parent folder with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-sec-mod
+    name: 'go-sec-mod'
+    entry: go-sec-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root $FILE); gosec [$ARGS] ./...' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-sec-pkg
+#   * Folder-Based
+#   * Targets folder containing staged file
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-sec-pkg
+    name: 'go-sec-pkg'
+    entry: go-sec-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'gosec [$ARGS] ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-sec-repo-mod
+#   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-sec-repo-mod
+    name: 'go-sec-repo-mod'
+    entry: go-sec-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root); gosec [$ARGS] ./...' for each module in the repo"
+    pass_filenames: false
+
+# ==============================================================================
+# go-sec-repo-pkg
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-sec-repo-pkg
+    name: 'go-sec-repo-pkg'
+    entry: go-sec-repo-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'gosec [$ARGS] ./...' in repo root folder"
+    pass_filenames: false
+
+# ==============================================================================
 # go-test-mod
 #   * Folder-Based
 #   * Recursive
