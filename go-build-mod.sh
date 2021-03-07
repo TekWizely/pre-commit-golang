@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
+tmpfile=$(mktemp /tmp/go-build.XXXXXX)
+outfile=$(mktemp /tmp/go-build.out.XXXXXX)
 
-cmd=(go build -o /dev/null)
+
+cmd=(go build -o ${tmpfile})
 
 export GO111MODULE=on
 
@@ -60,11 +63,11 @@ done
 
 errCode=0
 for sub in $(find_module_roots "${FILES[@]}" | sort -u) ; do
-	pushd "${sub}" >/dev/null
+	pushd "${sub}" > outfile
 	"${cmd[@]}" "${OPTIONS[@]}" ./...
 	if [ $? -ne 0 ]; then
 		errCode=1
 	fi
-	popd >/dev/null
+	popd > outfile
 done
 exit $errCode

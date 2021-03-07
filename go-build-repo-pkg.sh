@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-cmd=(go build -o /dev/null)
+tmpfile=$(mktemp /tmp/go-build.XXXXXX)
+cmd=(go build -o ${tmpfile})
 
 export GO111MODULE=off
 

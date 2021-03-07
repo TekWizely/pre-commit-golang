@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-cmd=(go build -o /dev/null)
+tmpfile=$(mktemp /tmp/go-build.XXXXXX)
+outfile=$(mktemp /tmp/go-build.out.XXXXXX)
+cmd=(go build -o ${tmpfile})
 
 export GO111MODULE=on
 
@@ -16,11 +18,11 @@ errCode=0
 # Assume parent folder of go.mod is module root folder
 #
 for sub in $(find . -name go.mod -not -path '*/vendor/*' | xargs -n1 dirname | sort -u) ; do
-	pushd "${sub}" >/dev/null
+	pushd "${sub}" > ${outfile}
 	"${cmd[@]}" "${OPTIONS[@]}" ./...
 	if [ $? -ne 0 ]; then
 		errCode=1
 	fi
-	popd >/dev/null
+	popd > ${outfile}
 done
 exit $errCode
