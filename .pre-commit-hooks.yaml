@@ -46,7 +46,7 @@
     files: '(\.go$)|(\bgo\.mod$)'
     exclude: '(^|/)vendor/'
     language: 'script'
-    description: "Run 'cd $(mod_root); go build -o /dev/null [$ARGS] ./...' for each module in the repo"
+    description: "Run 'cd $(mod_root); go build -o $(tempfile) [$ARGS] ./...' for each module in the repo"
     pass_filenames: false
 
 # ==============================================================================

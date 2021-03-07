@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 tmpfile=$(mktemp /tmp/go-build.XXXXXX)
+mkdir ${tmpfile}
 outfile=$(mktemp /tmp/go-build.out.XXXXXX)
 
 
