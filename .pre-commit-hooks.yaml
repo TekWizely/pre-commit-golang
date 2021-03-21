@@ -83,7 +83,7 @@
 #   * File-based
 #   * Executes if any .go files modified
 # NOTES:
-#   `go fmt` delegates to `gofmt`, so we'll invote `gofmt` directly.
+#   `go fmt` delegates to `gofmt`, so we'll invoke `gofmt` directly.
 # ==============================================================================
 - id: go-fmt
   name: "go-fmt"
