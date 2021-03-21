@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-cmd=(goimports -l -d)
+cmd=(goimports)
 
-OPTIONS=()
+OPTIONS=(-w)
 # If arg doesn't pass [ -f ] check, then it is assumed to be an option
 #
 while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ] && [ ! -f "$1" ]; do
