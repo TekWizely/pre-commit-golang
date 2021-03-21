@@ -302,6 +302,21 @@
   pass_filenames: true
 
 # ==============================================================================
+# go gofumpt
+#   * File-based
+#   * Executes if any .go files modified
+# ==============================================================================
+- id: go-gofumpt
+  name: "go-gofumpt"
+  entry: go-gofumpt.sh
+  types: [go]
+  exclude: "(^|/)vendor/"
+  language: "script"
+  description: "Run 'gofumpt [$ARGS] $FILE' for each staged .go file"
+  pass_filenames: true
+
+
+# ==============================================================================
 # golangci-lint-mod
 #   * Folder-Based
 #   * Recursive
