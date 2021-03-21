@@ -39,8 +39,6 @@ done
 
 errCode=0
 for file in "${FILES[@]}"; do
-	echo $file
-	echo "${cmd[@]} ${OPTIONS[@]} ${file}"
 	output=$("${cmd[@]}" "${OPTIONS[@]}" "${file}" 2>&1)
 	if [ ! -z "${output}" ]; then
 		echo -n "${output}"
