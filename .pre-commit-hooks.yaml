@@ -298,7 +298,7 @@
   types: [go]
   exclude: "(^|/)vendor/"
   language: "script"
-  description: "RUn 'gci [$ARGS] $FILE' for each staged .go file"
+  description: "Run 'gci [$ARGS] $FILE' for each staged .go file"
   pass_filenames: true
 
 # ==============================================================================
