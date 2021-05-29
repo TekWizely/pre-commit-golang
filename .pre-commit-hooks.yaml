@@ -141,6 +141,55 @@
     pass_filenames: true
 
 # ==============================================================================
+# go-revive
+#   * File-based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-revive
+    name: 'go-revive'
+    entry: go-revive.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'revive [$ARGS] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
+# go-revive-mod
+#   * Folder-Based
+#   * Recursive
+#   * Targets first parent folder with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-revive-mod
+    name: 'go-revive-mod'
+    entry: go-revive-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root $FILE); revive [$ARGS] ./...' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-revive-repo-mod
+#   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-revive-repo-mod
+    name: 'go-revive-repo-mod'
+    entry: go-revive-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root); revive [$ARGS] ./...' for each module in the repo"
+    pass_filenames: false
+
+# ==============================================================================
 # go-sec-mod
 #   * Folder-Based
 #   * Recursive
