@@ -376,7 +376,7 @@ go get -u golang.org/x/lint/golint
 
 -------------
 ### go-revive
-Fast, configurable, extensible, flexible, and beautiful linter for Go. Drop-in replacement of golint.
+~6x faster, stricter, configurable, extensible, and beautiful drop-in replacement for golint.
 
 | Hook ID   | Description
 |-----------|------------
