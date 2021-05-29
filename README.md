@@ -389,6 +389,18 @@ Fast, configurable, extensible, flexible, and beautiful linter for Go. Drop-in r
 go get -u github.com/mgechev/revive
 ```
 
+##### Useful Args
+```
+-config [PATH]     : Path to config file (TOML)
+-exclude [PATTERN] : Pattern for files/directories/packages to be excluded from linting
+-formatter [NAME]  : formatter to be used for the output
+```
+
+##### Displaying Warnings
+By default, `revive` doesn't generate errors on warnings, so warning messages may not be displayed if there are no accompanying error messages.
+
+You can use the `"verbose: true"` hook configuration to always show hook output.
+
 ##### Help
  - https://github.com/mgechev/revive#usage
  - `revive -h`
