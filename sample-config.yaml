@@ -97,6 +97,12 @@ repos:
     -   id: go-vet-repo-mod
     -   id: go-vet-repo-pkg
     #
+    # Revive
+    #
+    -   id: go-revive
+    -   id: go-revive-mod
+    -   id: go-revive-repo-mod
+    #
     # GoSec
     #
     -   id: go-sec-mod
