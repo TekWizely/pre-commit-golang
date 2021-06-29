@@ -191,6 +191,21 @@ This can be useful, for example, for hooks that display warnings, but don't gene
  - GolangCI-Lint
    - [golangci-lint](#golangci-lint)
 
+### Autoformatting
+In case you want to give pre-commit a double use as a task runner, the following example provides:
+
+- Checks only variant during pre-commit checks
+- Modifying variant when run with `pre-commit run --hook-stage manual go-returns-write`
+
+```
+    hooks:
+    -   id: go-returns
+    -   id: go-returns
+        alias: go-returns-write
+        stages: [manual]
+        args: [-w]
+```
+
 ------------
 ### go-build
 Compiles packages, along with their dependencies, but does not install the results.
