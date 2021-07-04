@@ -238,9 +238,9 @@ Inspects source code for security problems by scanning the Go AST.
 | `go-sec-repo-mod` | Run `'cd $(mod_root); gosec [$ARGS] ./...'` for each module in the repo
 | `go-sec-repo-pkg` | Run `'gosec [$ARGS] ./...'` in repo root folder
 
-##### Install
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
-go get github.com/securego/gosec/v2/cmd/gosec
+bingo install github.com/securego/gosec/v2/cmd/gosec
 ```
 
 ##### Help
@@ -304,9 +304,9 @@ Updates your Go import lines, adding missing ones and removing unreferenced ones
 |--------------|------------
 | `go-imports` | Run `'goimports -l -d [$ARGS] $FILE'` for each staged .go file
 
-##### Install
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
-go get -u golang.org/x/tools/cmd/goimports
+bingo install golang.org/x/tools/cmd/goimports
 ```
 
 ##### Useful Args
@@ -334,9 +334,9 @@ Implements a Go pretty-printer (like `go-fmt`) that also adds zero-value return 
 |--------------|------------
 | `go-returns` | Run `'goreturns -l -d [$ARGS] $FILE'` for each staged .go file
 
-##### Install
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
-go get -u github.com/sqs/goreturns
+bingo install github.com/sqs/goreturns
 ```
 
 ##### Useful Args
@@ -363,9 +363,9 @@ A linter for Go source code, meant to carry out the stylistic conventions put fo
 |-----------|------------
 | `go-lint` | Run `'golint -set_exit_status [$ARGS] $FILE'` for each staged .go file
 
-##### Install
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
-go get -u golang.org/x/lint/golint
+bingo install golang.org/x/lint/golint
 ```
 
 ##### Help
@@ -384,9 +384,9 @@ go get -u golang.org/x/lint/golint
 | `go-revive-mod`      | Run `'cd $(mod_root $FILE); revive [$ARGS] ./...'` for each staged .go file
 | `go-revive-repo-mod` | Run `'cd $(mod_root); revive [$ARGS] ./...'` for each module in the repo
 
-##### Install
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
-go get -u github.com/mgechev/revive
+bingo install github.com/mgechev/revive
 ```
 
 ##### Useful Args
@@ -452,9 +452,9 @@ A FAST linter aggregator, with colored output, fewer false-positives, and suppor
 | `golangci-lint-repo-mod` | Run `'cd $(mod_root); golangci-lint run [$ARGS] ./...'` for each module in the repo
 | `golangci-lint-repo-pkg` | Run `'golangci-lint run [$ARGS] ./...'` in repo root folder
 
-##### Install
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
-go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
+bingo install github.com/golangci/golangci-lint/cmd/golangci-lint
 ```
 ##### Useful Args
 ```
