@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cmd=(gofmt -l -d)
+cmd=(gofmt -l -w)
 
 OPTIONS=()
 # If arg doesn't pass [ -f ] check, then it is assumed to be an option

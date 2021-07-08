@@ -1,30 +1,6 @@
 #!/usr/bin/env bash
-tmpfile=$(mktemp -d /tmp/go-build.XXXXXX)
-outfile=$(mktemp /tmp/go-build.out.XXXXXX)
 
-
-cmd=(go build -o ${tmpfile})
-
-export GO111MODULE=on
-
-# Walks up the file path looking for go.mod
-#
-function find_module_roots() {
-	for arg in "$@" ; do
-	  local path="${arg}"
-	  if [ "${path}" == "" ]; then
-	    path="."
-	  elif [ -f "${path}" ]; then
-	    path=$(dirname "${path}")
-	  fi
-	  while [ "${path}" != "." ] && [ ! -f "${path}/go.mod" ]; do
-	    path=$(dirname "${path}")
-	  done
-	  if [ -f "${path}/go.mod" ]; then
-	  	echo "${path}"
-	  fi
-	done
-}
+cmd=(gci)
 
 OPTIONS=()
 # If arg doesn't pass [ -f ] check, then it is assumed to be an option
@@ -62,12 +38,12 @@ while [ $# -gt 0 ]; do
 done
 
 errCode=0
-for sub in $(find_module_roots "${FILES[@]}" | sort -u) ; do
-	pushd "${sub}" > outfile
-	"${cmd[@]}" "${OPTIONS[@]}" ./...
-	if [ $? -ne 0 ]; then
+for file in "${FILES[@]}"; do
+	output=$("${cmd[@]}" "${OPTIONS[@]}" "${file}" 2>&1)
+	if [ ! -z "${output}" ]; then
+		echo -n "${output}"
+		echo "" # newline
 		errCode=1
 	fi
-	popd > outfile
 done
 exit $errCode
