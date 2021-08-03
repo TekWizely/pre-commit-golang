@@ -1,6 +1,6 @@
 # Pre-Commit-GoLang [![MIT license](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/tekwizely/pre-commit-golang/blob/master/LICENSE)
 
-A set of git pre-commit hooks for Golang with support for Modules.
+A set of git pre-commit hooks for Golang with support for multi-module mono-repos.  It includes out of the box hooks for several popular go commands &amp; tools, and also supports the ability to invoke custom go tools.
 
 Requires the [Pre-Commit.com](https://pre-commit.com) Hook Management framework.
 
@@ -89,6 +89,16 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: golangci-lint-pkg
     -   id: golangci-lint-repo-mod
     -   id: golangci-lint-repo-pkg
+    #
+    # Invoking Custom Go Tools
+    # - Use aliases to create multiple custom hook entries of a given type
+    #
+    -   id: my-cmd
+    -   id: my-cmd-mod
+    -   id: my-cmd-pkg
+    -   id: my-cmd-repo
+    -   id: my-cmd-repo-mod
+    -   id: my-cmd-repo-pkg
 ```
 
 -----------

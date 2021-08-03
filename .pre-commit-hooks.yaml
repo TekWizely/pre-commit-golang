@@ -1,4 +1,99 @@
 # ==============================================================================
+# my-cmd
+#   * File-based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: my-cmd
+    name: 'my-cmd'
+    entry: my-cmd.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run '$ARGS[0] [$ARGS[1:]] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
+# my-cmd-mod
+#   * Folder-Based
+#   * Recursive
+#   * Targets first parent folder with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: my-cmd-mod
+    name: 'my-cmd-mod'
+    entry: my-cmd-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root $FILE); $ARGS[0] [$ARGS[1:]] ./...' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# my-cmd-pkg
+#   * Folder-Based
+#   * Targets folder containing staged file
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: my-cmd-pkg
+    name: 'my-cmd-pkg'
+    entry: my-cmd-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run '$ARGS[0] [$ARGS[1:]] ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# my-cmd-repo
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: my-cmd-repo
+    name: 'my-cmd-repo'
+    entry: my-cmd-repo.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run '$ARGS[0] [$ARGS[1:]]' in the repo root folder"
+    pass_filenames: false
+
+# ==============================================================================
+# my-cmd-repo-mod
+#   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: my-cmd-repo-mod
+    name: 'my-cmd-repo-mod'
+    entry: my-cmd-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root); $ARGS[0] [$ARGS[1:]] /...' for each module in the repo"
+    pass_filenames: false
+
+# ==============================================================================
+# my-cmd-repo-pkg
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: my-cmd-repo-pkg
+    name: 'my-cmd-repo-pkg'
+    entry: my-cmd-repo-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run '$ARGS[0] [$ARGS[1:]] ./...' in repo root folder"
+    pass_filenames: false
+
+# ==============================================================================
 # go-build-mod
 #   * Folder-Based
 #   * Recursive
