@@ -139,7 +139,10 @@ repos:
     -   id: golangci-lint-repo-pkg
     #
     # Invoking Custom Go Tools
-    # - Use aliases to create multiple custom hook entries of a given type
+    # - Configured *entirely* through the `args` attribute, ie:
+    #   args: [ go, test ]
+    # - Use the `name` attribute to provide better messaging when the hook runs
+    # - Use the `alias` attribute to be able invoke your hook via `pre-commit run`
     #
     -   id: my-cmd
     -   id: my-cmd-mod

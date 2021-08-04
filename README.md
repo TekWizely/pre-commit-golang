@@ -1,8 +1,8 @@
 # Pre-Commit-GoLang [![MIT license](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/tekwizely/pre-commit-golang/blob/master/LICENSE)
 
-A set of git pre-commit hooks for Golang with support for multi-module mono-repos.  It includes out of the box hooks for several popular go commands &amp; tools, and also supports the ability to invoke custom go tools.
+A set of git pre-commit hooks for Golang with support for multi-module monorepos, the ability to pass arguments to all hooks, and the ability to invoke custom go tools.
 
-Requires the [Pre-Commit.com](https://pre-commit.com) Hook Management framework.
+Requires the [Pre-Commit.com](https://pre-commit.com) Hook Management Framework.
 
 ---------------
 ## Installation
@@ -91,7 +91,10 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: golangci-lint-repo-pkg
     #
     # Invoking Custom Go Tools
-    # - Use aliases to create multiple custom hook entries of a given type
+    # - Configured *entirely* through the `args` attribute, ie:
+    #   args: [ go, test ]
+    # - Use the `name` attribute to provide better messaging when the hook runs
+    # - Use the `alias` attribute to be able invoke your hook via `pre-commit run`
     #
     -   id: my-cmd
     -   id: my-cmd-mod
@@ -137,6 +140,7 @@ Hooks have suffixes in their name that indicate their targets:
 | \<none>     | Files        | Targets staged files directly                     |
 | `-mod`      | Module       | Targets module root folders of staged `.go` files |
 | `-pkg`      | Package      | Targets folders containing staged `.go` files     |
+| `-repo`     | Repo Root    | Targets the repo root folder                      |
 | `-repo-mod` | All Modules  | Targets all module root folders in the repo       |
 | `-repo-pkg` | All Packages | Targets all package folders in the repo           |
 
@@ -145,6 +149,14 @@ Hooks have suffixes in their name that indicate their targets:
 Due to OS command-line-length limits, Pre-Commit can invoke a hook multiple times if a large number of files are staged.
 
 For file and repo-based hooks, this isn't an issue, but for module and package-based hooks, there is a potential for the hook to run against the same module or package multiple times, duplicating any errors or warnings.
+
+-------------------------
+### Invoking Custom Tools
+While this project includes builtin hooks for many popular go tools, it's not possible to include builtin hooks for every tool that users might want to use.
+
+To help accommodate those users, this project includes the ability to invoke custom go tools.
+
+See the [my-cmd](#my-cmd) hooks for more information.
 
 --------------------------
 ### Useful Hook Parameters
@@ -200,6 +212,8 @@ This can be useful, for example, for hooks that display warnings, but don't gene
    - [go-revive](#go-revive)
  - GolangCI-Lint
    - [golangci-lint](#golangci-lint)
+ - Invoking Custom Tools
+   - [my-cmd](#my-cmd)
 
 ------------
 ### go-build
@@ -225,10 +239,10 @@ Automates testing, printing a summary of test resutls.
 
 | Hook ID            | Description
 |--------------------|------------
-| `go-test-mod`      | Run `'cd $(mod_root $FILE); gosec [$ARGS] ./...'` for each staged .go file
-| `go-test-pkg`      | Run `'gosec [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `go-test-repo-mod` | Run `'cd $(mod_root); gosec [$ARGS] ./...'` for each module in the repo
-| `go-test-repo-pkg` | Run `'gosec [$ARGS] ./...'` in repo root folder
+| `go-test-mod`      | Run `'cd $(mod_root $FILE); go test [$ARGS] ./...'` for each staged .go file
+| `go-test-pkg`      | Run `'go test [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `go-test-repo-mod` | Run `'cd $(mod_root); go test [$ARGS] ./...'` for each module in the repo
+| `go-test-repo-pkg` | Run `'go test [$ARGS] ./...'` in repo root folder
 
 ##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
@@ -493,6 +507,69 @@ bingo install github.com/golangci/golangci-lint/cmd/golangci-lint
 ##### Config File Help:
  - https://github.com/golangci/golangci-lint#config-file
  - `golangci-lint config -h`
+
+----------
+### my-cmd
+
+Using the `my-cmd-*` hooks, you can invoke custom go tools in various contexts.
+
+ | Hook ID           | Description
+ |-------------------|------------
+ | `my-cmd`          | Run `'$ARGS[0] [$ARGS[1:]] $FILE'` for each staged .go file
+ | `my-cmd-mod`      | Run `'cd $(mod_root $FILE); $ARGS[0] [$ARGS[1:]] ./...'` for each staged .go file
+ | `my-cmd-pkg`      | Run `'$ARGS[0] [$ARGS[1:]] ./$(dirname $FILE)'` for each staged .go file
+ | `my-cmd-repo`     | Run `'$ARGS[0] [$ARGS[1:]]'` in the repo root folder
+ | `my-cmd-repo-mod` | Run `'cd $(mod_root); $ARGS[0] [$ARGS[1:]] /...'` for each module in the repo
+ | `my-cmd-repo-pkg` | Run `'$ARGS[0] [$ARGS[1:]] ./...'` in repo root folder
+
+#### Configuring the hooks
+
+The my-cmd hooks are configured **entirely** through the pre-commit `args` attribute, including specifying which tool to run (ie `$ARGS[0]` above)
+
+#### Examples
+
+Here's an example of what it would look like to use the my-cmd hooks to invoke `go test` if it wasn't already included:
+
+_.pre-commit-config.yaml_
+```
+# ...
+      hooks:
+            # Run 'cd $(mod_root $FILE); go test ./...' for each staged .go file
+        -   id: my-cmd-mod
+            name: go-test-mod
+            alias: go-test-mod
+            args: [ go, test ]
+```
+
+##### Names &amp; Aliases
+
+It is recommended that you use both `name` and `alias` attributes when defining my-cmd hooks.
+
+The name will provide better messaging when the hook runs.
+
+The alias will enable you to invoke the hook manually from the command-line when needed (see `pre-commit help run`)
+
+##### error-on-output
+
+Some tools, like `gofmt`, `goimports`, and `goreturns`, don't generate error codes, but instead expect the presence of any output to indicate warning/error conditions.
+
+The my-cmd hooks accept an `--error-on-output` argument to indicate this behavior.
+
+Here's an example of what it would look like to use the my-cmd hooks to invoke `gofmt` if it wasn't already included:
+
+_.pre-commit-config.yaml_
+```
+# ...
+      hooks:
+            # Run 'gofmt -l -d $FILE' for each staged .go file
+            # Treat any output as indication of failure
+        -   id: my-cmd
+            name: go-fmt
+            alias: go-fmt
+            args: [ --error-on-output, gofmt, -l, -d ]
+```
+
+**NOTE:** When used, the `--error-on-output` option **must** be the first argument.
 
 ----------
 ## License
