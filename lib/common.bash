@@ -91,8 +91,8 @@ function parse_repo_hook_args {
 # Walks up the file path looking for go.mod
 #
 function find_module_roots() {
-	for arg in "$@"; do
-		local path="${arg}"
+	local path
+	for path in "$@"; do
 		if [ "${path}" == "" ]; then
 			path="."
 		elif [ -f "${path}" ]; then
@@ -102,7 +102,7 @@ function find_module_roots() {
 			path=$(dirname "${path}")
 		done
 		if [ -f "${path}/go.mod" ]; then
-			printf "%s" "${path}"
+			printf "%s\n" "${path}"
 		fi
 	done
 }
