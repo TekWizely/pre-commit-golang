@@ -7,8 +7,7 @@ prepare_repo_hook_cmd "$@"
 if [ "${error_on_output:-}" -eq 1 ]; then
 	output=$("${cmd[@]}" "${OPTIONS[@]}" 2>&1)
 	if [ -n "${output}" ]; then
-		echo -n "${output}"
-		echo "" # newline
+		printf "%s\n" "${output}"
 		exit 1
 	fi
 else

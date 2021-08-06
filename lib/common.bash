@@ -46,11 +46,12 @@ function parse_file_hook_args {
 		shift
 	done
 
-	FILES=()
+	local all_files
+	all_files=()
 	# Assume start of file list (may still be options)
 	#
 	while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ]; do
-		FILES+=("$1")
+		all_files+=("$1")
 		shift
 	done
 
@@ -61,16 +62,27 @@ function parse_file_hook_args {
 			shift
 			# Append to previous options
 			#
-			OPTIONS=("${OPTIONS[@]}" "${FILES[@]}")
-			FILES=()
+			OPTIONS=("${OPTIONS[@]}" "${all_files[@]}")
+			all_files=()
 		fi
 	fi
 
 	# Any remaining arguments are assumed to be files
 	#
 	while [ $# -gt 0 ]; do
-		FILES+=("$1")
+		all_files+=("$1")
 		shift
+	done
+
+	# Filter out vendor entries
+	#
+	FILES=()
+	local file
+	for file in "${all_files[@]}"; do
+		if [[ "${file}" == "vendor/"* || "${file}" == *"/vendor/"* || "${file}" == *"/vendor" ]]; then
+			continue
+		fi
+		FILES+=("${file}")
 	done
 }
 
@@ -89,10 +101,14 @@ function parse_repo_hook_args {
 ##
 # find_module_roots
 # Walks up the file path looking for go.mod
+# Prunes paths with /vendor/ in them
 #
 function find_module_roots() {
 	local path
 	for path in "$@"; do
+		if [[ "${path}" == "vendor/"* || "${path}" == *"/vendor/"* || "${path}" == *"/vendor" ]]; then
+			continue
+		fi
 		if [ "${path}" == "" ]; then
 			path="."
 		elif [ -f "${path}" ]; then

@@ -9,8 +9,7 @@ for file in "${FILES[@]}"; do
 	if [ "${error_on_output:-}" -eq 1 ]; then
 		output=$("${cmd[@]}" "${OPTIONS[@]}" "${file}" 2>&1)
 		if [ -n "${output}" ]; then
-			echo -n "${output}"
-			echo "" # newline
+			printf "%s\n" "${output}"
 			error_code=1
 		fi
 	elif ! "${cmd[@]}" "${OPTIONS[@]}" "${file}"; then
