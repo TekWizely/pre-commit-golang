@@ -1,16 +1,6 @@
 #!/usr/bin/env bash
-set -e
-
+# shellcheck disable=SC2034  # vars used by sourced script
+error_on_output=0
 cmd=(go build -o /dev/null)
-
-export GO111MODULE=off
-
-OPTIONS=()
-# Build options list, ignoring '-', '--', and anything after
-#
-while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ]; do
-	OPTIONS+=("$1")
-	shift
-done
-
-"${cmd[@]}" "${OPTIONS[@]}" ./...
+# shellcheck source=lib/cmd-repo-pkg.bash
+. "$(dirname "${0}")/lib/cmd-repo-pkg.bash"

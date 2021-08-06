@@ -3,10 +3,43 @@
 # See https://pre-commit.com/hooks.html for more hooks
 # ==============================================================================
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.0.0
     hooks:
     -   id: check-merge-conflict
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
     -   id: check-yaml
+  # Bash helper hooks (local)
+  #
+  - repo: local
+    hooks:
+      # shellcheck (aliased to shck)
+      #
+      - id: shellcheck
+        name: Run static analysis (shellcheck)
+        entry: shellcheck
+        language: system
+        files: \.(sh|bash)$
+        types: [file]
+        alias: shck
+        args: [ '-x' ]
+      # shfmt
+      #
+      - id: shfmt
+        name: Run lint check (shfmt -d)
+        entry: shfmt
+        language: system
+        files: \.(sh|bash)$
+        types: [file]
+        args: [ '-i', '0', '-ci', '-sr', '-d' ]
+      # shfmt -w (must manually invoke)
+      #
+      - id: shfmtw
+        name: Auto-fix lint errors (shfmt -w)
+        entry: shfmt
+        language: system
+        stages: [manual]
+        files: \.(sh|bash)$
+        types: [file]
+        args: [ '-i', '0', '-ci', '-sr', '-kp', '-w' ]

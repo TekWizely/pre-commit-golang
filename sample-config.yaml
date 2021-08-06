@@ -30,6 +30,10 @@ repos:
     #   The hooks only run once (if any matching files are staged),
     #   and are NOT provided the list of staged files,
     #
+    # My-Cmd-* Hooks
+    #   Allow you to invoke custom tools in varous contexts.
+    #   Can be useful if your favorite tool(s) are not built-in (yet)
+    #
     # Hook Suffixes
     #   Hooks have suffixes in their name that indicate their targets:
     #
@@ -39,6 +43,7 @@ repos:
     #   | <none>    | Files        |
     #   | -mod      | Module       |
     #   | -pkg      | Package      |
+    #   | -repo     | Repo Root    |
     #   | -repo-mod | All Modules  |
     #   | -repo-pkg | All Packages |
     #   +-----------+--------------+
@@ -132,3 +137,16 @@ repos:
     -   id: golangci-lint-pkg
     -   id: golangci-lint-repo-mod
     -   id: golangci-lint-repo-pkg
+    #
+    # Invoking Custom Go Tools
+    # - Configured *entirely* through the `args` attribute, ie:
+    #   args: [ go, test ]
+    # - Use the `name` attribute to provide better messaging when the hook runs
+    # - Use the `alias` attribute to be able invoke your hook via `pre-commit run`
+    #
+    -   id: my-cmd
+    -   id: my-cmd-mod
+    -   id: my-cmd-pkg
+    -   id: my-cmd-repo
+    -   id: my-cmd-repo-mod
+    -   id: my-cmd-repo-pkg
