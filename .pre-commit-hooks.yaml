@@ -210,6 +210,8 @@
 # go-fumpt
 #   * File-based
 #   * Executes if any .go files modified
+# NOTES:
+#   Replaces go-fmt
 # ==============================================================================
 -   id: go-fumpt
     name: 'go-fumpt'
@@ -226,7 +228,7 @@
 #   * Recursive
 #   * Executes if any .go files modified
 # NOTES:
-#   `go fmt` delegates to `gofmt`, so we'll invote `gofmt` directly.
+#   Replaces go-fmt-repo
 # ==============================================================================
 -   id: go-fumpt-repo
     name: 'go-fumpt-repo'
@@ -242,7 +244,7 @@
 #   * File-based
 #   * Executes if any .go files modified
 # NOTES:
-#   Replaces go-fmt-fix
+#   Replaces go-fmt
 # ==============================================================================
 -   id: go-imports
     name: 'go-imports'
@@ -252,6 +254,23 @@
     language: 'script'
     description: "Run 'goimports -l -d [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
+
+# ==============================================================================
+# go-imports-repo
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# NOTES:
+#   Replaces go-fmt-repo
+# ==============================================================================
+-   id: go-imports-repo
+    name: 'go-imports-repo'
+    entry: go-imports-repo.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'goimports -l -d [$ARGS] .' in repo root folder"
+    pass_filenames: false
 
 # ==============================================================================
 # go-lint
@@ -307,7 +326,7 @@
 #   * File-based
 #   * Executes if any .go files modified
 # NOTES:
-#   Replaces go-imports-fix & go-fmt-fix
+#   Replaces go-imports & go-fmt
 # ==============================================================================
 -   id: go-returns
     name: 'go-returns'
@@ -317,6 +336,23 @@
     language: 'script'
     description: "Run 'goreturns -l -d [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
+
+# ==============================================================================
+# go-returns-repo
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# NOTES:
+#   Replaces go-imports-repo & go-fmt-repo
+# ==============================================================================
+-   id: go-returns-repo
+    name: 'go-returns-repo'
+    entry: go-returns-repo.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'goreturns -l -d [$ARGS] .' in repo root folder"
+    pass_filenames: false
 
 # ==============================================================================
 # go-revive
