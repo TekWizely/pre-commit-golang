@@ -39,6 +39,11 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: go-build-repo-mod
     -   id: go-build-repo-pkg
     #
+    # Go Mod Tidy
+    #
+    -   id: go-mod-tidy
+    -   id: go-mod-tidy-repo
+    #
     # Go Test
     #
     -   id: go-test-mod
@@ -70,8 +75,13 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # Formatters
     #
     -   id: go-fmt
-    -   id: go-imports # replaces go-fmt
-    -   id: go-returns # replaces go-imports & go-fmt
+    -   id: go-fmt-repo
+    -   id: go-fumpt        # replaces go-fmt
+    -   id: go-fumpt-repo   # replaces go-fmt-repo
+    -   id: go-imports      # replaces go-fmt
+    -   id: go-imports-repo # replaces go-fmt-repo
+    -   id: go-returns      # replaces go-imports & go-fmt
+    -   id: go-returns-repo # replaces go-imports-repo & go-fmt-repo
     #
     # Style Checkers
     #
@@ -92,7 +102,7 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #
     # Invoking Custom Go Tools
     # - Configured *entirely* through the `args` attribute, ie:
-    #   args: [ go, test ]
+    #   args: [ go, test, ./... ]
     # - Use the `name` attribute to provide better messaging when the hook runs
     # - Use the `alias` attribute to be able invoke your hook via `pre-commit run`
     #
@@ -197,13 +207,16 @@ This can be useful, for example, for hooks that display warnings, but don't gene
 --------
 ## Hooks
 
- - Correctness Checkers
+ - Build Tools
    - [go-build](#go-build)
+   - [go-mod-tidy](#go-mod-tidy)
+ - Correctness Checkers
    - [go-test](#go-test)
    - [go-vet](#go-vet)
    - [go-sec](#go-sec)
  - Formatters
    - [go-fmt](#go-fmt)
+   - [go-fumpt](#go-fumpt)
    - [go-imports](#go-imports)
    - [go-returns](#go-returns)
  - Style Checkers
@@ -233,9 +246,25 @@ Comes with Golang ( [golang.org](https://golang.org/) )
  - https://golang.org/cmd/go/#hdr-Compile_packages_and_dependencies
  - `go help build`
 
+---------------
+### go-mod-tidy
+Makes sure `go.mod` matches the source code in the module.
+
+| Hook ID            | Description
+|--------------------|------------
+| `go-mod-tidy`      | Run `'cd $(mod_root $FILE); go mod tidy [$ARGS] ./...'` for each staged .go file
+| `go-mod-tidy-repo` | Run `'cd $(mod_root); go mod tidy [$ARGS] ./...'` for each module in the repo
+
+##### Install
+Comes with Golang ( [golang.org](https://golang.org/) )
+
+##### Help
+ - https://golang.org/ref/mod#go-mod-tidy
+ - `go mod help tidy`
+
 -----------
 ### go-test
-Automates testing, printing a summary of test resutls.
+Automates testing, printing a summary of test results.
 
 | Hook ID            | Description
 |--------------------|------------
@@ -299,16 +328,17 @@ Formats Go programs. It uses tabs for indentation and blanks for alignment. Alig
 
  - Can modify files (see `-w`)
 
-| Hook ID  | Description
-|----------|------------
-| `go-fmt` | Run `'gofmt -l -d [$ARGS] $FILE'` for each staged .go file
+| Hook ID       | Description
+|---------------|------------
+| `go-fmt`      | Run `'gofmt -l -d [$ARGS] $FILE'` for each staged .go file
+| `go-fmt-repo` | Run `'gofmt -l -d [$ARGS] .'` in repo root folder
 
 ##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
 
 ##### Useful Args
 ```
--d=false : Don't display diffs
+-d=false : Hide diffs
 -s       : Try to simplify code
 -w       : Update source file directly
 ```
@@ -317,6 +347,35 @@ Comes with Golang ( [golang.org](https://golang.org/) )
  - https://godoc.org/github.com/golang/go/src/cmd/gofmt
  - `gofmt -h`
 
+------------
+### go-fumpt
+Enforce a stricter format than `gofmt`, while being backwards compatible.
+
+ - Replaces `go-fmt`
+ - Can modify files (see `-w`)
+
+| Hook ID         | Description
+|-----------------|------------
+| `go-fumpt`      | Run `'gofumpt -l -d [$ARGS] $FILE'` for each staged .go file
+| `go-fumpt-repo` | Run `'gofumpt -l -d [$ARGS] .'` in repo root folder
+
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
+```
+bingo install mvdan.cc/gofumpt
+```
+
+##### Useful Args
+```
+-d=false : Hide diffs
+-extra   : Enable extra rules which should be vetted by a human
+-s       : Try to simplify code
+-w       : Update source file directly
+```
+
+##### Help
+ - https://pkg.go.dev/mvdan.cc/gofumpt
+ - `gofumpt -h`
+
 --------------
 ### go-imports
 Updates your Go import lines, adding missing ones and removing unreferenced ones.
@@ -324,9 +383,10 @@ Updates your Go import lines, adding missing ones and removing unreferenced ones
  - Replaces `go-fmt`
  - Can modify files (see `-w`)
 
-| Hook ID      | Description
-|--------------|------------
-| `go-imports` | Run `'goimports -l -d [$ARGS] $FILE'` for each staged .go file
+| Hook ID           | Description
+|-------------------|------------
+| `go-imports`      | Run `'goimports -l -d [$ARGS] $FILE'` for each staged .go file
+| `go-imports-repo` | Run `'goimports -l -d [$ARGS] .'` in repo root folder
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -354,9 +414,10 @@ Implements a Go pretty-printer (like `go-fmt`) that also adds zero-value return 
  - Replaces `go-fmt` and `go-imports`
  - Can modify files (see `-w`)
 
-| Hook ID      | Description
-|--------------|------------
-| `go-returns` | Run `'goreturns -l -d [$ARGS] $FILE'` for each staged .go file
+| Hook ID           | Description
+|-------------------|------------
+| `go-returns`      | Run `'goreturns -l -d [$ARGS] $FILE'` for each staged .go file
+| `go-returns-repo` | Run `'goreturns -l -d [$ARGS] .'` in repo root folder
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -516,15 +577,17 @@ Using the `my-cmd-*` hooks, you can invoke custom go tools in various contexts.
  | Hook ID           | Description
  |-------------------|------------
  | `my-cmd`          | Run `'$ARGS[0] [$ARGS[1:]] $FILE'` for each staged .go file
- | `my-cmd-mod`      | Run `'cd $(mod_root $FILE); $ARGS[0] [$ARGS[1:]] ./...'` for each staged .go file
- | `my-cmd-pkg`      | Run `'$ARGS[0] [$ARGS[1:]] ./$(dirname $FILE)'` for each staged .go file
+ | `my-cmd-mod`      | Run `'cd $(mod_root $FILE); GO111MODULE=on $ARGS[0] [$ARGS[1:]]'` for each staged .go file
+ | `my-cmd-pkg`      | Run `'GO111MODULE=off $ARGS[0] [$ARGS[1:]] ./$(dirname $FILE)'` for each staged .go file
  | `my-cmd-repo`     | Run `'$ARGS[0] [$ARGS[1:]]'` in the repo root folder
- | `my-cmd-repo-mod` | Run `'cd $(mod_root); $ARGS[0] [$ARGS[1:]] /...'` for each module in the repo
- | `my-cmd-repo-pkg` | Run `'$ARGS[0] [$ARGS[1:]] ./...'` in repo root folder
+ | `my-cmd-repo-mod` | Run `'cd $(mod_root); GO111MODULE=on $ARGS[0] [$ARGS[1:]]'` for each module in the repo
+ | `my-cmd-repo-pkg` | Run `'GO111MODULE=off $ARGS[0] [$ARGS[1:]]` in repo root folder
 
 #### Configuring the hooks
 
-The my-cmd hooks are configured **entirely** through the pre-commit `args` attribute, including specifying which tool to run (ie `$ARGS[0]` above)
+The my-cmd hooks are configured **entirely** through the pre-commit `args` attribute, including specifying which tool to run (ie `$ARGS[0]` above).
+
+This includes the need to manually add the `./...` target for module-based tools that require it.
 
 #### Examples
 
@@ -538,7 +601,7 @@ _.pre-commit-config.yaml_
         -   id: my-cmd-mod
             name: go-test-mod
             alias: go-test-mod
-            args: [ go, test ]
+            args: [ go, test, ./... ]
 ```
 
 ##### Names &amp; Aliases

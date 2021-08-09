@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-. "$(dirname "${0}")/lib/prepare-my-cmd.bash"
+error_on_output=1
+cmd=(goreturns -l -d .)
 . "$(dirname "${0}")/lib/cmd-repo.bash"

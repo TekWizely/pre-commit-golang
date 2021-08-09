@@ -87,6 +87,11 @@ repos:
     -   id: go-build-repo-mod
     -   id: go-build-repo-pkg
     #
+    # Go Mod Tidy
+    #
+    -   id: go-mod-tidy
+    -   id: go-mod-tidy-repo
+    #
     # Go Test
     #
     -   id: go-test-mod
@@ -118,8 +123,13 @@ repos:
     # Formatters
     #
     -   id: go-fmt
-    -   id: go-imports # Replaces go-fmt
-    -   id: go-returns # Replaces go-imports & go-fmt
+    -   id: go-fmt-repo
+    -   id: go-fumpt        # replaces go-fmt
+    -   id: go-fumpt-repo   # replaces go-fmt-repo
+    -   id: go-imports      # replaces go-fmt
+    -   id: go-imports-repo # replaces go-fmt-repo
+    -   id: go-returns      # replaces go-imports & go-fmt
+    -   id: go-returns-repo # replaces go-imports-repo & go-fmt-repo
     #
     # Style Checkers
     #
@@ -140,7 +150,7 @@ repos:
     #
     # Invoking Custom Go Tools
     # - Configured *entirely* through the `args` attribute, ie:
-    #   args: [ go, test ]
+    #   args: [ go, test, ./... ]
     # - Use the `name` attribute to provide better messaging when the hook runs
     # - Use the `alias` attribute to be able invoke your hook via `pre-commit run`
     #

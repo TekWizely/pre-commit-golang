@@ -23,7 +23,7 @@ repos:
         files: \.(sh|bash)$
         types: [file]
         alias: shck
-        args: [ '-x' ]
+        args: [ '-x', '-e', 'SC2034' ]
       # shfmt
       #
       - id: shfmt
