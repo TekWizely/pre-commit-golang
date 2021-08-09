@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-cmd=(revive)
+use_dot_dot_dot=0
+cmd=(go mod tidy)
 . "$(dirname "${0}")/lib/cmd-repo-mod.bash"

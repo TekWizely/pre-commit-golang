@@ -1,5 +1,8 @@
 # shellcheck shell=bash
 
+: "${use_dot_dot_dot:=1}"
+: "${error_on_output:=0}"
+
 ##
 # prepare_repo_hook_cmd
 #

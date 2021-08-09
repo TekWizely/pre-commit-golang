@@ -6,7 +6,7 @@ prepare_repo_hook_cmd "$@"
 
 export GO111MODULE=off
 if [ "${error_on_output:-}" -eq 1 ]; then
-	output=$("${cmd[@]}" "${OPTIONS[@]}" ./... 2>&1)
+	output=$("${cmd[@]}" "${OPTIONS[@]}" 2>&1)
 	if [ -n "${output}" ]; then
 		printf "%s\n" "${output}"
 		exit 1

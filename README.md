@@ -524,7 +524,9 @@ Using the `my-cmd-*` hooks, you can invoke custom go tools in various contexts.
 
 #### Configuring the hooks
 
-The my-cmd hooks are configured **entirely** through the pre-commit `args` attribute, including specifying which tool to run (ie `$ARGS[0]` above)
+The my-cmd hooks are configured **entirely** through the pre-commit `args` attribute, including specifying which tool to run (ie `$ARGS[0]` above).
+
+This includes the need to manually add the `./...` target for module-based tools that require it.
 
 #### Examples
 
@@ -538,7 +540,7 @@ _.pre-commit-config.yaml_
         -   id: my-cmd-mod
             name: go-test-mod
             alias: go-test-mod
-            args: [ go, test ]
+            args: [ go, test, ./... ]
 ```
 
 ##### Names &amp; Aliases

@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-. "$(dirname "${0}")/lib/prepare-my-cmd.bash"
+use_dot_dot_dot=0
+cmd=(go mod tidy)
 . "$(dirname "${0}")/lib/cmd-mod.bash"
