@@ -4,6 +4,8 @@
 
 prepare_repo_hook_cmd "$@"
 
+# Add target after options
+#
 if [[ ${#target[@]} -gt 0 ]]; then
 	OPTIONS+=("${target[@]}")
 fi
