@@ -44,7 +44,7 @@ function parse_file_hook_args {
 	OPTIONS=()
 	# If arg doesn't pass [ -f ] check, then it is assumed to be an option
 	#
-	while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ] && [ ! -f "$1" ]; do
+	while [ $# -gt 0 ] && [ "$1" != "--" ] && [ ! -f "$1" ]; do
 		OPTIONS+=("$1")
 		shift
 	done
@@ -53,29 +53,24 @@ function parse_file_hook_args {
 	all_files=()
 	# Assume start of file list (may still be options)
 	#
-	while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ]; do
+	while [ $# -gt 0 ] && [ "$1" != "--" ]; do
 		all_files+=("$1")
 		shift
 	done
 
 	# If '--' next, then files = options
 	#
-	if [ $# -gt 0 ]; then
-		if [ "$1" == "-" ] || [ "$1" == "--" ]; then
-			shift
-			# Append to previous options
-			#
-			OPTIONS=("${OPTIONS[@]}" "${all_files[@]}")
-			all_files=()
-		fi
+	if [ "$1" == "--" ]; then
+		shift
+		# Append to previous options
+		#
+		OPTIONS+=("${all_files[@]}")
+		all_files=()
 	fi
 
 	# Any remaining arguments are assumed to be files
 	#
-	while [ $# -gt 0 ]; do
-		all_files+=("$1")
-		shift
-	done
+	all_files+=("$@")
 
 	# Filter out vendor entries
 	#
@@ -91,11 +86,11 @@ function parse_file_hook_args {
 
 ##
 # parse_repo_hook_args
-# Build options list, ignoring '-', '--', and anything after
+# Build options list, ignoring '--', and anything after
 #
 function parse_repo_hook_args {
 	OPTIONS=()
-	while [ $# -gt 0 ] && [ "$1" != "-" ] && [ "$1" != "--" ]; do
+	while [ $# -gt 0 ] && [ "$1" != "--" ]; do
 		OPTIONS+=("$1")
 		shift
 	done

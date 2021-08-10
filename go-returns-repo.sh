@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 error_on_output=1
-cmd=(goreturns -l -d .)
+cmd=(goreturns -l -d)
+target=(.)
 . "$(dirname "${0}")/lib/cmd-repo.bash"
