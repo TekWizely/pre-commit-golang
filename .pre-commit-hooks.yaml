@@ -470,6 +470,72 @@
     pass_filenames: false
 
 # ==============================================================================
+# go-staticcheck-mod
+#   * Folder-Based
+#   * Recursive
+#   * Targets first parent folder with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-staticcheck-mod
+    name: 'go-staticcheck-mod'
+    entry: go-staticcheck-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root $FILE); staticcheck [$ARGS] ./...' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-staticcheck-pkg
+#   * Folder-Based
+#   * Targets folder containing staged file
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-staticcheck-pkg
+    name: 'go-staticcheck-pkg'
+    entry: go-staticcheck-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'staticcheck [$ARGS] ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-staticcheck-repo-mod
+#   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-staticcheck-repo-mod
+    name: 'go-staticcheck-repo-mod'
+    entry: go-staticcheck-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root); staticcheck [$ARGS] ./...' for each module in the repo"
+    pass_filenames: false
+
+# ==============================================================================
+# go-staticcheck-repo-pkg
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-staticcheck-repo-pkg
+    name: 'go-staticcheck-repo-pkg'
+    entry: go-staticcheck-repo-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'staticcheck [$ARGS] ./...' in repo root folder"
+    pass_filenames: false
+
+# ==============================================================================
 # go-test-mod
 #   * Folder-Based
 #   * Recursive
