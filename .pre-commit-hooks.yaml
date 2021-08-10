@@ -1,3 +1,21 @@
+-   id: echo
+    name: 'echo'
+    entry: echo.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: ""
+    pass_filenames: true
+-   id: echo-mod
+    name: 'echo-mod'
+    entry: echo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: ""
+    pass_filenames: true
+    require_serial: true
+
 # ==============================================================================
 # my-cmd
 #   * File-based
