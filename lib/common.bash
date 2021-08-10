@@ -65,7 +65,7 @@ function parse_file_hook_args {
 			shift
 			# Append to previous options
 			#
-			OPTIONS=("${OPTIONS[@]}" "${all_files[@]}")
+			OPTIONS+=("${all_files[@]}")
 			all_files=()
 		fi
 	fi
