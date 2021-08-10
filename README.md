@@ -72,6 +72,13 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: go-sec-repo-mod
     -   id: go-sec-repo-pkg
     #
+    # StaticCheck
+    #
+    -   id: go-staticcheck-mod
+    -   id: go-staticcheck-pkg
+    -   id: go-staticcheck-repo-mod
+    -   id: go-staticcheck-repo-pkg
+    #
     # Formatters
     #
     -   id: go-fmt
@@ -257,6 +264,7 @@ This can be useful, for example, for hooks that display warnings, but don't gene
    - [go-test](#go-test)
    - [go-vet](#go-vet)
    - [go-sec](#go-sec)
+   - [go-staticcheck](#go-staticcheck)
  - Formatters
    - [go-fmt](#go-fmt)
    - [go-fumpt](#go-fumpt)
@@ -323,7 +331,7 @@ Comes with Golang ( [golang.org](https://golang.org/) )
  - https://golang.org/cmd/go/#hdr-Test_packages
  - `go help test`
 
------------
+----------
 ### go-sec
 Inspects source code for security problems by scanning the Go AST.
 
@@ -342,6 +350,26 @@ bingo install github.com/securego/gosec/v2/cmd/gosec
 ##### Help
  - https://github.com/securego/gosec#usage
  - `gosec (no args)`
+
+------------------
+### go-staticcheck
+A state of the art linter for the Go programming language. Using static analysis, it finds bugs and performance issues, offers simplifications, and enforces style rules.
+
+| Hook ID                   | Description
+|---------------------------|------------
+| `go-staticcheck-mod`      | Run `'cd $(mod_root $FILE); staticcheck [$ARGS] ./...'` for each staged .go file
+| `go-staticcheck-pkg`      | Run `'staticcheck [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `go-staticcheck-repo-mod` | Run `'cd $(mod_root); staticcheck [$ARGS] ./...'` for each module in the repo
+| `go-staticcheck-repo-pkg` | Run `'staticcheck [$ARGS] ./...'` in repo root folder
+
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
+```
+bingo install honnef.co/go/tools/cmd/staticcheck
+```
+
+##### Help
+ - https://staticcheck.io/
+ - `staticcheck -h`
 
 ----------
 ### go-vet

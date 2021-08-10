@@ -360,7 +360,6 @@
 #   * Executes if any .go files modified
 # ==============================================================================
 -   id: go-revive
-    alias: revive
     name: 'go-revive'
     entry: go-revive.sh
     types: [go]
@@ -479,7 +478,6 @@
 #   * Executes if go.mod modified
 # ==============================================================================
 -   id: go-staticcheck-mod
-    alias: staticcheck-mod
     name: 'go-staticcheck-mod'
     entry: go-staticcheck-mod.sh
     files: '(\.go$)|(\bgo\.mod$)'
