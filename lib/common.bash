@@ -2,6 +2,7 @@
 
 : "${use_dot_dot_dot:=1}"
 : "${error_on_output:=0}"
+: "${ignore_file_pattern_array:=}"
 
 ##
 # prepare_repo_hook_cmd
@@ -38,7 +39,7 @@ function verify_hook_cmd {
 # parse_file_hook_args
 # Creates global vars:
 #   OPTIONS: List of options to passed to comand
-#   FILES  : List of files to process
+#   FILES  : List of files to process, filtered against ignore_file_pattern_array
 #
 function parse_file_hook_args {
 	OPTIONS=()
@@ -72,14 +73,17 @@ function parse_file_hook_args {
 	#
 	all_files+=("$@")
 
-	# Filter out vendor entries
+	# Filter out vendor entries and ignore_file_pattern_array
 	#
 	FILES=()
-	local file
+	local file pattern
+	ignore_file_pattern_array+=( "vendor/*" "*/vendor/*" "*/vendor" )
 	for file in "${all_files[@]}"; do
-		if [[ "${file}" == "vendor/"* || "${file}" == *"/vendor/"* || "${file}" == *"/vendor" ]]; then
-			continue
-		fi
+		for pattern in "${ignore_file_pattern_array[@]}"; do
+			if [[ "${file}" == ${pattern} ]] ; then # pattern => unquoted
+				continue 2
+			fi
+		done
 		FILES+=("${file}")
 	done
 }

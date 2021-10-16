@@ -532,13 +532,26 @@ bingo install golang.org/x/lint/golint
 
 -------------
 ### go-revive
-~6x faster, stricter, configurable, extensible, and beautiful drop-in replacement for golint.
+\~6x faster, stricter, configurable, extensible, and beautiful drop-in replacement for golint.
 
 | Hook ID   | Description
 |-----------|------------
 | `go-revive`          | Run `'revive [$ARGS] $FILE'` for each staged .go file
 | `go-revive-mod`      | Run `'cd $(mod_root $FILE); revive [$ARGS] ./...'` for each staged .go file
 | `go-revive-repo-mod` | Run `'cd $(mod_root); revive [$ARGS] ./...'` for each module in the repo
+
+##### Support for Repository-Level Config
+As of time of writing, revive only auto-checks for configs in `${HOME}/revive.toml`, and doesn't check the local folder (ie. `${REPO_ROOT}/revive.toml`).
+
+To make revive more useful, these hooks add built-in support for a repository-level config file.
+
+###### Auto-Configured
+These hooks are configured to auto-add `-config=revive.toml` when the file is present in the repository root.
+
+###### Triggerred When Modified
+These hooks are configured to run when the repo-level `revive.toml` file is modified (and staged).
+
+**NOTE:** Although configured to run, the file-based `go-revive` hook will, by default, effectively _do nothing_ if there are no staged `.go` files to run against.
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```

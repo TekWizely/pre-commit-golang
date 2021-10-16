@@ -358,11 +358,14 @@
 # go-revive
 #   * File-based
 #   * Executes if any .go files modified
+#   * Executes if revive.toml modified
+#   * Adds arg '-config=revive.toml' if present
+# NOTE: Does nothing if ONLY revive.toml is modified (ie no .go files modified)
 # ==============================================================================
 -   id: go-revive
     name: 'go-revive'
     entry: go-revive.sh
-    types: [go]
+    files: '(\.go$)|(\brevive\.toml$)'
     exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'revive [$ARGS] $FILE' for each staged .go file"
@@ -375,11 +378,13 @@
 #   * Targets first parent folder with a go.mod file
 #   * Executes if any .go files modified
 #   * Executes if go.mod modified
+#   * Executes if revive.toml modified
+#   * Adds arg '-config=revive.toml' if present
 # ==============================================================================
 -   id: go-revive-mod
     name: 'go-revive-mod'
     entry: go-revive-mod.sh
-    files: '(\.go$)|(\bgo\.mod$)'
+    files: '(\.go$)|(\bgo\.mod$)|(\brevive\.toml$)'
     exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root $FILE); revive [$ARGS] ./...' for each staged .go file"
@@ -393,11 +398,13 @@
 #   * Targets ALL folders with a go.mod file
 #   * Executes if any .go files modified
 #   * Executes if go.mod modified
+#   * Executes if revive.toml modified
+#   * Adds arg '-config=revive.toml' if present
 # ==============================================================================
 -   id: go-revive-repo-mod
     name: 'go-revive-repo-mod'
     entry: go-revive-repo-mod.sh
-    files: '(\.go$)|(\bgo\.mod$)'
+    files: '(\.go$)|(\bgo\.mod$)|(\brevive\.toml$)'
     exclude: '(^|/)vendor/'
     language: 'script'
     description: "Run 'cd $(mod_root); revive [$ARGS] ./...' for each module in the repo"
