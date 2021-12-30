@@ -543,6 +543,72 @@
     pass_filenames: false
 
 # ==============================================================================
+# go-structslop-mod
+#   * Folder-Based
+#   * Recursive
+#   * Targets first parent folder with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-structslop-mod
+    name: 'go-structslop-mod'
+    entry: go-structslop-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root $FILE); structslop [$ARGS] ./...' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-structslop-pkg
+#   * Folder-Based
+#   * Targets folder containing staged file
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-structslop-pkg
+    name: 'go-structslop-pkg'
+    entry: go-structslop-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'structslop [$ARGS] ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-structslop-repo-mod
+#   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-structslop-repo-mod
+    name: 'go-structslop-repo-mod'
+    entry: go-structslop-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root); structslop [$ARGS] ./...' for each module in the repo"
+    pass_filenames: false
+
+# ==============================================================================
+# go-structslop-repo-pkg
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-structslop-repo-pkg
+    name: 'go-structslop-repo-pkg'
+    entry: go-structslop-repo-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'structslop [$ARGS] ./...' in repo root folder"
+    pass_filenames: false
+
+# ==============================================================================
 # go-test-mod
 #   * Folder-Based
 #   * Recursive
@@ -771,69 +837,3 @@
     language: 'script'
     description: "Run 'golangci-lint run [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
-
-# ==============================================================================
-# go-structslop-mod
-#   * Folder-Based
-#   * Recursive
-#   * Targets first parent folder with a go.mod file
-#   * Executes if any .go files modified
-#   * Executes if go.mod modified
-# ==============================================================================
--   id: go-structslop-mod
-    name: 'go-structslop-mod'
-    entry: go-structslop-mod.sh
-    files: '(\.go$)|(\bgo\.mod$)'
-    exclude: '(^|/)vendor/'
-    language: 'script'
-    description: "Run 'cd $(mod_root $FILE); structslop [$ARGS] ./...' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# go-structslop-pkg
-#   * Folder-Based
-#   * Targets folder containing staged file
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: go-structslop-pkg
-    name: 'go-structslop-pkg'
-    entry: go-structslop-pkg.sh
-    types: [go]
-    exclude: '(^|/)vendor/'
-    language: 'script'
-    description: "Run 'structslop [$ARGS] ./$(dirname $FILE)' for each staged .go file"
-    pass_filenames: true
-    require_serial: true
-
-# ==============================================================================
-# go-structslop-repo-mod
-#   * Repo-Based
-#   * Recursive
-#   * Targets ALL folders with a go.mod file
-#   * Executes if any .go files modified
-#   * Executes if go.mod modified
-# ==============================================================================
--   id: go-structslop-repo-mod
-    name: 'go-structslop-repo-mod'
-    entry: go-structslop-repo-mod.sh
-    files: '(\.go$)|(\bgo\.mod$)'
-    exclude: '(^|/)vendor/'
-    language: 'script'
-    description: "Run 'cd $(mod_root); structslop [$ARGS] ./...' for each module in the repo"
-    pass_filenames: false
-
-# ==============================================================================
-# go-structslop-repo-pkg
-#   * Repo-Based
-#   * Recursive
-#   * Executes if any .go files modified
-# ==============================================================================
--   id: go-structslop-repo-pkg
-    name: 'go-structslop-repo-pkg'
-    entry: go-structslop-repo-pkg.sh
-    types: [go]
-    exclude: '(^|/)vendor/'
-    language: 'script'
-    description: "Run 'structslop [$ARGS] ./...' in repo root folder"
-    pass_filenames: false
