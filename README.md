@@ -79,7 +79,7 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: go-staticcheck-repo-mod
     -   id: go-staticcheck-repo-pkg
     #
-    # structslop
+    # StructSlop
     #
     -   id: go-structslop-mod
     -   id: go-structslop-pkg
@@ -272,6 +272,7 @@ This can be useful, for example, for hooks that display warnings, but don't gene
    - [go-vet](#go-vet)
    - [go-sec](#go-sec)
    - [go-staticcheck](#go-staticcheck)
+   - [go-structslop](#go-structslop)
  - Formatters
    - [go-fmt](#go-fmt)
    - [go-fumpt](#go-fumpt)
@@ -378,11 +379,11 @@ bingo install honnef.co/go/tools/cmd/staticcheck
  - https://staticcheck.io/
  - `staticcheck -h`
 
-----------
-### structslop
+-----------------
+### go-structslop
 Recommends struct field rearrangements to provide for maximum space/allocation efficiency.
 
- - Can modify files (use `-apply`)
+ - Can modify files (see `-apply`)
 
 | Hook ID                  | Description
 |--------------------------|------------
@@ -394,6 +395,11 @@ Recommends struct field rearrangements to provide for maximum space/allocation e
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
 bingo install github.com/orijtech/structslop/cmd/structslop
+```
+
+##### Useful Args
+```
+-apply : apply suggested fixes
 ```
 
 ##### Help
