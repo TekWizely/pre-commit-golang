@@ -79,6 +79,13 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: go-staticcheck-repo-mod
     -   id: go-staticcheck-repo-pkg
     #
+    # StructSlop
+    #
+    -   id: go-structslop-mod
+    -   id: go-structslop-pkg
+    -   id: go-structslop-repo-mod
+    -   id: go-structslop-repo-pkg
+    #
     # Formatters
     #
     -   id: go-fmt
@@ -265,6 +272,7 @@ This can be useful, for example, for hooks that display warnings, but don't gene
    - [go-vet](#go-vet)
    - [go-sec](#go-sec)
    - [go-staticcheck](#go-staticcheck)
+   - [go-structslop](#go-structslop)
  - Formatters
    - [go-fmt](#go-fmt)
    - [go-fumpt](#go-fumpt)
@@ -370,6 +378,33 @@ bingo install honnef.co/go/tools/cmd/staticcheck
 ##### Help
  - https://staticcheck.io/
  - `staticcheck -h`
+
+-----------------
+### go-structslop
+Recommends struct field rearrangements to provide for maximum space/allocation efficiency.
+
+ - Can modify files (see `-apply`)
+
+| Hook ID                  | Description
+|--------------------------|------------
+| `go-structslop-mod`      | Run `'cd $(mod_root $FILE); structslop [$ARGS] ./...'` for each staged .go file
+| `go-structslop-pkg`      | Run `'structslop [$ARGS] ./$(dirname $FILE)'` for each staged .go file
+| `go-structslop-repo-mod` | Run `'cd $(mod_root); structslop [$ARGS] ./...'` for each module in the repo
+| `go-structslop-repo-pkg` | Run `'structslop [$ARGS] ./...'` in repo root folder
+
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
+```
+bingo install github.com/orijtech/structslop/cmd/structslop
+```
+
+##### Useful Args
+```
+-apply : apply suggested fixes
+```
+
+##### Help
+ - https://github.com/orijtech/structslop#usage
+ - `structslop -h`
 
 ----------
 ### go-vet
