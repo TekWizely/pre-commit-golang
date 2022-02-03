@@ -10,6 +10,7 @@
 function prepare_file_hook_cmd {
 	verify_hook_cmd
 	parse_file_hook_args "$@"
+	set_env
 }
 
 ##
@@ -18,6 +19,7 @@ function prepare_file_hook_cmd {
 function prepare_repo_hook_cmd {
 	verify_hook_cmd
 	parse_repo_hook_args "$@"
+	set_env
 }
 
 ##
@@ -39,14 +41,20 @@ function verify_hook_cmd {
 # parse_file_hook_args
 # Creates global vars:
 #   OPTIONS: List of options to passed to comand
+#   VARS   : List of environment variables to set
 #   FILES  : List of files to process, filtered against ignore_file_pattern_array
 #
 function parse_file_hook_args {
 	OPTIONS=()
+	VARS=()
 	# If arg doesn't pass [ -f ] check, then it is assumed to be an option
 	#
 	while [ $# -gt 0 ] && [ "$1" != "--" ] && [ ! -f "$1" ]; do
-		OPTIONS+=("$1")
+	    if [ "${1:0:5}" == "-env-" ]; then
+			VARS+=("${1:5}")
+		else
+			OPTIONS+=("$1")
+		fi
 		shift
 	done
 
@@ -94,8 +102,13 @@ function parse_file_hook_args {
 #
 function parse_repo_hook_args {
 	OPTIONS=()
+	VARS=()
 	while [ $# -gt 0 ] && [ "$1" != "--" ]; do
-		OPTIONS+=("$1")
+		if [ "${1:0:5}" == "-env-" ]; then
+			VARS+=("${1:5}")
+		else
+			OPTIONS+=("$1")
+		fi
 		shift
 	done
 }
@@ -122,5 +135,14 @@ function find_module_roots() {
 		if [ -f "${path}/go.mod" ]; then
 			printf "%s\n" "${path}"
 		fi
+	done
+}
+
+function set_env() {
+	for var in "${VARS[@]}"; do
+		IFS='='
+		kv=($var)
+		unset IFS
+		export ${kv[0]}=${kv[1]}
 	done
 }
