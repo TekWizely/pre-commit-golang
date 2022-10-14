@@ -5,7 +5,7 @@
 : "${ignore_file_pattern_array:=}"
 
 ##
-# prepare_repo_hook_cmd
+# prepare_file_hook_cmd
 #
 function prepare_file_hook_cmd {
 	verify_hook_cmd
@@ -38,10 +38,46 @@ function verify_hook_cmd {
 ##
 # parse_file_hook_args
 # Creates global vars:
-#   OPTIONS: List of options to passed to comand
-#   FILES  : List of files to process, filtered against ignore_file_pattern_array
+#   ENV_VARS: List of variables to assign+export before invoking command
+#   OPTIONS : List of options to pass to command
+#   FILES   : List of files to process, filtered against ignore_file_pattern_array
+#
+# NOTE: We consume the first (optional) '--' we encounter.
+#       If you want to pass '--' to the command, you'll need to use 2 of them
+#       in hook args, i.e. "args: [..., '--', '--']"
 #
 function parse_file_hook_args {
+	# Look for '--hook:*' options up to the first (optional) '--'
+	# Anything else (including '--' and after) gets saved and passed to next step
+	# Positional order of saved arguments is preserved
+	#
+	local ENV_REGEX='^[a-zA-Z_][a-zA-Z0-9_]*=.*$'
+	ENV_VARS=()
+	local __ARGS=()
+	while [ $# -gt 0 ] && [ "$1" != "--" ]; do
+		case "$1" in
+			--hook:env:*)
+				local env_var="${1#--hook:env:}"
+				if [[ "${env_var}" =~ ${ENV_REGEX} ]]; then
+					ENV_VARS+=("${env_var}")
+				else
+					printf "ERROR: Invalid hook:env variable: '%s'\n" "${env_var}" >&2
+					exit 1
+				fi
+				shift
+				;;
+			--hook:*)
+				printf "ERROR: Unknown hook option: '%s'\n" "${1}" >&2
+				exit 1
+				;;
+			*) # preserve positional arguments
+				__ARGS+=("$1")
+				shift
+				;;
+		esac
+	done
+	set -- "${__ARGS[@]}" "${@}"
+	unset __ARGS
 	OPTIONS=()
 	# If arg doesn't pass [ -f ] check, then it is assumed to be an option
 	#
@@ -60,6 +96,7 @@ function parse_file_hook_args {
 	done
 
 	# If '--' next, then files = options
+	# NOTE: We consume the '--' here
 	#
 	if [ "$1" == "--" ]; then
 		shift
@@ -90,14 +127,52 @@ function parse_file_hook_args {
 
 ##
 # parse_repo_hook_args
-# Build options list, ignoring '--', and anything after
+# Creates global vars:
+#   ENV_VARS: List of variables to assign+export before invoking command
+#   OPTIONS : List of options to pass to command
+#
+# NOTE: For consistency with file hooks,
+#       we consume the first (optional) '--' we encounter.
+#       If you want to pass '--' to the command, you'll need to use 2 of them
+#       in hook args, i.e. "args: [..., '--', '--']"
 #
 function parse_repo_hook_args {
+	# Look for '--hook:*' options up to the first (optional) '--'
+	# Consumes the first '--', treating anything after as OPTIONS
+	# Positional order of OPTIONS is preserved
+	#
+	local ENV_REGEX='^[a-zA-Z_][a-zA-Z0-9_]*=.*$'
+	ENV_VARS=()
 	OPTIONS=()
-	while [ $# -gt 0 ] && [ "$1" != "--" ]; do
-		OPTIONS+=("$1")
-		shift
+	while [ $# -gt 0 ]; do
+		case "$1" in
+			--hook:env:*)
+				local env_var="${1#--hook:env:}"
+				if [[ "${env_var}" =~ ${ENV_REGEX} ]]; then
+					ENV_VARS+=("${env_var}")
+				else
+					printf "ERROR: Invalid hook:env variable: '%s'\n" "${env_var}" >&2
+					exit 1
+				fi
+				shift
+				;;
+			--hook:*)
+				printf "ERROR: Unknown hook option: '%s'\n" "${1}" >&2
+				exit 1
+				;;
+			--) # consume '--' and stop loop
+				shift
+				break
+				;;
+			*) # preserve positional arguments
+				OPTIONS+=("$1")
+				shift
+				;;
+		esac
 	done
+	# Any remaining items also considered OPTIONS
+	#
+	OPTIONS+=("$@")
 }
 
 ##
