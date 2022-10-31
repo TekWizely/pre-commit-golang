@@ -31,7 +31,7 @@ repos:
     #   and are NOT provided the list of staged files,
     #
     # My-Cmd-* Hooks
-    #   Allow you to invoke custom tools in varous contexts.
+    #   Allow you to invoke custom tools in various contexts.
     #   Can be useful if your favorite tool(s) are not built-in (yet)
     #
     # Hook Suffixes
@@ -67,6 +67,12 @@ repos:
     #   need to use a trailing '--' argument to separate the hook options from
     #   the modified-file list that Pre-Commit passes into the hook.
     #   NOTE: For repo-based hooks, '--' is not needed.
+    #
+    # Passing Environment Variables to Hooks:
+    #  You can pass environment variables to hooks using args with the
+    #  following format:
+    #
+    #           --hook:env:NAME=VALUE
     #
     # Always Run:
     #   By default, hooks ONLY run when matching file types are staged.
@@ -165,8 +171,10 @@ repos:
     # Invoking Custom Go Tools
     # - Configured *entirely* through the `args` attribute, ie:
     #   args: [ go, test, ./... ]
+    # - Use arg `--hook:error-on-output` to indicate that any output from the tool
+    #   should be treated as an error.
     # - Use the `name` attribute to provide better messaging when the hook runs
-    # - Use the `alias` attribute to be able invoke your hook via `pre-commit run`
+    # - Use the `alias` attribute to be able to invoke your hook via `pre-commit run`
     #
     -   id: my-cmd
     -   id: my-cmd-mod

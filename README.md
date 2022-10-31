@@ -1,6 +1,6 @@
 # Pre-Commit-GoLang [![MIT license](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/tekwizely/pre-commit-golang/blob/master/LICENSE)
 
-A set of git pre-commit hooks for Golang with support for multi-module monorepos, the ability to pass arguments to all hooks, and the ability to invoke custom go tools.
+A set of git pre-commit hooks for Golang with support for multi-module monorepos, the ability to pass arguments and environment variables to all hooks, and the ability to invoke custom go tools.
 
 Requires the [Pre-Commit.com](https://pre-commit.com) Hook Management Framework.
 
@@ -25,6 +25,11 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #       argument to separate the hook options from the modified-file list
     #       that Pre-Commit passes into the hook.
     #       For repo-based hooks, '--' is not needed.
+    #
+    # NOTE: You can pass environment variables to hooks using args with the 
+    #       following format:
+    #
+    #           --hook:env:NAME=VALUE
     #
     # Consider adding aliases to longer-named hooks for easier CLI usage.
     # ==========================================================================
@@ -117,8 +122,10 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # Invoking Custom Go Tools
     # - Configured *entirely* through the `args` attribute, ie:
     #   args: [ go, test, ./... ]
+    # - Use arg `--hook:error-on-output` to indicate that any output from the tool
+    #   should be treated as an error.
     # - Use the `name` attribute to provide better messaging when the hook runs
-    # - Use the `alias` attribute to be able invoke your hook via `pre-commit run`
+    # - Use the `alias` attribute to be able to invoke your hook via `pre-commit run`
     #
     -   id: my-cmd
     -   id: my-cmd-mod
@@ -205,6 +212,21 @@ See each hook's description below for some popular options that you might want t
 
 Additionally, you can view each tool's individual home page or help settings to learn about all the available options.
 
+#### Passing Environment Variables To Hooks
+You can pass environment variables to hooks to customize tool behavior.
+
+**NOTE:** The Pre-Commit framework does not directly support the ability to pass environment variables to hooks.
+
+This feature is enabled via support for a specially-formatted argument:
+
+* `--hook:env:NAME=VALUE`
+
+The hook script will detect this argument and set the variable `NAME` to the value `VALUE` before invoking the configured tool.
+
+You can pass multiple  `--hook:env:` arguments.
+
+The arguments can appear anywhere in the `args:` list.
+
 #### Always Run
 By default, hooks ONLY run when matching file types (usually `*.go`) are staged.
 
@@ -214,10 +236,10 @@ When configured to `"always_run"`, a hook is executed as if EVERY matching file 
 
 pre-commit supports the ability to assign both an `alias` and a `name` to a configured hook:
 
-| config | description
-|--------|------------
-| alias  | (optional) allows the hook to be referenced using an additional id when using `pre-commit run <hookid>`
-| name   | (optional) override the name of the hook - shown during hook execution
+| config | description                                                                                             |
+|--------|---------------------------------------------------------------------------------------------------------|
+| alias  | (optional) allows the hook to be referenced using an additional id when using `pre-commit run <hookid>` |
+| name   | (optional) override the name of the hook - shown during hook execution                                  |
 
 These are beneficial for a couple of reasons:
 
@@ -735,7 +757,7 @@ The alias will enable you to invoke the hook manually from the command-line when
 
 Some tools, like `gofmt`, `goimports`, and `goreturns`, don't generate error codes, but instead expect the presence of any output to indicate warning/error conditions.
 
-The my-cmd hooks accept an `--error-on-output` argument to indicate this behavior.
+The my-cmd hooks accept a `--hook:error-on-output` argument to indicate this behavior.
 
 Here's an example of what it would look like to use the my-cmd hooks to invoke `gofmt` if it wasn't already included:
 
@@ -748,10 +770,10 @@ _.pre-commit-config.yaml_
         -   id: my-cmd
             name: go-fmt
             alias: go-fmt
-            args: [ --error-on-output, gofmt, -l, -d ]
+            args: [ gofmt, -l, -d, --hook:error-on-output]
 ```
 
-**NOTE:** When used, the `--error-on-output` option **must** be the first argument.
+**NOTE:** The plain `--error-on-output` option is now deprecated, but still supported, as long as it's the **very first** entry in the `args:` list.
 
 ----------
 ## License

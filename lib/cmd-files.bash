@@ -1,5 +1,6 @@
 # shellcheck shell=bash
 
+# shellcheck source=./common.bash
 . "$(dirname "${0}")/lib/common.bash"
 
 prepare_file_hook_cmd "$@"
@@ -7,12 +8,12 @@ prepare_file_hook_cmd "$@"
 error_code=0
 for file in "${FILES[@]}"; do
 	if [ "${error_on_output:-}" -eq 1 ]; then
-		output=$("${cmd[@]}" "${OPTIONS[@]}" "${file}" 2>&1)
+		output=$(/usr/bin/env "${ENV_VARS[@]}" "${cmd[@]}" "${OPTIONS[@]}" "${file}" 2>&1)
 		if [ -n "${output}" ]; then
 			printf "%s\n" "${output}"
 			error_code=1
 		fi
-	elif ! "${cmd[@]}" "${OPTIONS[@]}" "${file}"; then
+	elif ! /usr/bin/env "${ENV_VARS[@]}" "${cmd[@]}" "${OPTIONS[@]}" "${file}"; then
 		error_code=1
 	fi
 done
