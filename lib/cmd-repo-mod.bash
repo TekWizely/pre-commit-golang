@@ -12,7 +12,7 @@ export GO111MODULE=on
 error_code=0
 # Assume parent folder of go.mod is module root folder
 #
-for sub in $(find . -name go.mod -not -path '*/vendor/*' -exec dirname "{}" ';' | sort -u); do
+for sub in $(git ls-files | grep '/go\.mod$' | grep -v "/vendor/" | xargs -n1 dirname | sort -u); do
 	pushd "${sub}" > /dev/null || exit 1
 	if [ "${error_on_output:-}" -eq 1 ]; then
 		output=$(/usr/bin/env "${ENV_VARS[@]}" "${cmd[@]}" "${OPTIONS[@]}" 2>&1)
