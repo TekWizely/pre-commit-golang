@@ -112,6 +112,8 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # - Can be configured to replace MOST other hooks
     # - Supports repo config file for configuration
     # - https://github.com/golangci/golangci-lint
+    # - Use arg `--hook:path-prefix` to indicate that the repository root
+    #   directory should be passed to the tool (for `*-mod` hooks)
     #
     -   id: golangci-lint
     -   id: golangci-lint-mod
