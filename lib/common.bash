@@ -2,6 +2,7 @@
 
 : "${use_dot_dot_dot:=1}"
 : "${error_on_output:=0}"
+: "${use_path_prefix:=0}"
 : "${ignore_file_pattern_array:=}"
 
 ##
@@ -64,6 +65,10 @@ function parse_file_hook_args {
 					printf "ERROR: Invalid hook:env variable: '%s'\n" "${env_var}" >&2
 					exit 1
 				fi
+				shift
+				;;
+			--hook:path-prefix)
+				use_path_prefix=1
 				shift
 				;;
 			--hook:*)
