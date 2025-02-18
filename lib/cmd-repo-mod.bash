@@ -15,7 +15,7 @@ error_code=0
 for sub in $(find . -name go.mod -not -path '*/vendor/*' -exec dirname "{}" ';' | sort -u); do
 	pushd "${sub}" > /dev/null || exit 1
 	if [ "${use_path_prefix:-}" -eq 1 ] && [ "${cmd_cwd_arg:-}" ]; then
-		OPTIONS+=("${cmd_cwd_arg}=${sub}")
+		OPTIONS+=("${cmd_cwd_arg//\{\{sub\}\}/"$sub"}")
 	fi
 	if [ "${error_on_output:-}" -eq 1 ]; then
 		output=$(/usr/bin/env "${ENV_VARS[@]}" "${cmd[@]}" "${OPTIONS[@]}" 2>&1)
