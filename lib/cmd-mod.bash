@@ -12,6 +12,7 @@ export GO111MODULE=on
 error_code=0
 # Assume parent folder of go.mod is module root folder
 #
+# TODO Try to reduce the redundancy by generating the dirname's first
 for sub in $(find_module_roots "${FILES[@]}" | sort -u); do
 	pushd "${sub}" > /dev/null || exit 1
 	if [ "${error_on_output:-}" -eq 1 ]; then
