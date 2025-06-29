@@ -2,7 +2,7 @@
 
 : "${use_dot_dot_dot:=1}"
 : "${error_on_output:=0}"
-: "${ignore_file_pattern_array:=}"
+: "${ignore_pattern_array:=}"
 : "${ignore_dir_pattern_array:=}"
 ignore_dir_pattern_array+=("vendor")
 
@@ -38,30 +38,31 @@ function verify_hook_cmd {
 }
 
 ##
-# is_path_ignored_by_file_pattern
+# is_path_ignored_by_pattern
 #
-# Determines whether a given path matches an ignored file pattern.
+# Determines whether a given path matches an ignored pattern.
 #
 # Arguments:
 #   $1 - The path to check against the ignored patterns.
 #
 # Globals:
-#   ignore_file_pattern_array - An array of ignored file patterns used for matching.
+#   ignore_pattern_array - An array of ignored file patterns used for matching.
 #
 # Returns:
 #   0 (success) if the path matches an ignored file pattern and should be ignored.
 #   1 (failure) otherwise.
 #
-is_path_ignored_by_file_pattern() {
-  local path="$1"
-  local pattern
-  for pattern in "${ignore_file_pattern_array[@]}"; do
-			if [[ "${path}" == ${pattern} ]] ; then # pattern => unquoted
-			  return 0
-			fi
-  done
+is_path_ignored_by_pattern() {
+	local path="$1"
+	local pattern
+	for pattern in "${ignore_pattern_array[@]}"; do
+		# shellcheck disable=SC2053  # Patterns should be unquoted
+		if [[ "${path}" == ${pattern} ]]; then
+			return 0
+		fi
+	done
 
-  return 1
+	return 1
 }
 
 ##
@@ -80,51 +81,50 @@ is_path_ignored_by_file_pattern() {
 #   1 (failure) otherwise.
 #
 is_path_ignored_by_dir_pattern() {
-  local path="$1"
-  local pattern
-  for pattern in "${ignore_dir_pattern_array[@]}"; do
-    if [[ "$pattern" == /* ]]; then
-      # Rule: Pattern starts with '/' → must match the beginning of the path
-      local base="${pattern#/}"
+	local path="$1"
+	local pattern
+	for pattern in "${ignore_dir_pattern_array[@]}"; do
+		if [[ "$pattern" == /* ]]; then
+			# Rule: Pattern starts with '/' → must match the beginning of the path
+			local base="${pattern#/}"
 
-      if [[ "$base" == */ ]]; then
-        # Rule: Pattern like /foo/ → matches paths starting with 'foo/'
-        base="${base%/}"
-        if [[ "$path" == "$base/"* ]]; then
-          return 0
-        fi
-      else
-        # Rule: Pattern like /foo → matches 'foo' or any path starting with 'foo/'
-        if [[ "$path" == "$base" || "$path" == "$base/"* ]]; then
-          return 0
-        fi
-      fi
-    else
-      # Rule: Pattern without leading slash → match anywhere in the path
-      if [[ "$pattern" == */ ]]; then
-        # Rule: Pattern like foo/ → must appear as a directory somewhere in the path
-        if [[ "$path" == *"/${pattern%/}/"* || "$path" == "${pattern}"* ]]; then
-          return 0
-        fi
-      else
-        # Rule: Pattern like foo → matches if it appears as a complete directory
-        if [[ "$path" == "$pattern" || "$path" == "$pattern/"* || "$path" == */"$pattern" || "$path" == */"$pattern/"* ]]; then
-          return 0
-        fi
-      fi
-    fi
-  done
+			if [[ "$base" == */ ]]; then
+				# Rule: Pattern like /foo/ → matches paths starting with 'foo/'
+				base="${base%/}"
+				if [[ "$path" == "$base/"* ]]; then
+					return 0
+				fi
+			else
+				# Rule: Pattern like /foo → matches 'foo' or any path starting with 'foo/'
+				if [[ "$path" == "$base" || "$path" == "$base/"* ]]; then
+					return 0
+				fi
+			fi
+		else
+			# Rule: Pattern without leading slash → match anywhere in the path
+			if [[ "$pattern" == */ ]]; then
+				# Rule: Pattern like foo/ → must appear as a directory somewhere in the path
+				if [[ "$path" == *"/${pattern%/}/"* || "$path" == "${pattern}"* ]]; then
+					return 0
+				fi
+			else
+				# Rule: Pattern like foo → matches if it appears as a complete directory
+				if [[ "$path" == "$pattern" || "$path" == "$pattern/"* || "$path" == */"$pattern" || "$path" == */"$pattern/"* ]]; then
+					return 0
+				fi
+			fi
+		fi
+	done
 
-  return 1
+	return 1
 }
-
 
 ##
 # parse_file_hook_args
 # Creates global vars:
 #   ENV_VARS: List of variables to assign+export before invoking command
 #   OPTIONS : List of options to pass to command
-#   FILES   : List of files to process, filtered against ignore_file_pattern_array
+#   FILES   : List of files to process, filtered against ignored dir and pattern entries
 #
 # NOTE: We consume the first (optional) '--' we encounter.
 #       If you want to pass '--' to the command, you'll need to use 2 of them
@@ -150,12 +150,12 @@ function parse_file_hook_args {
 				fi
 				shift
 				;;
-			--hook:ignore-file=*)
-				local ignore_file_pattern="${1#--hook:ignore-file=}"
-				if [[ -n "${ignore_file_pattern}" ]]; then
-					ignore_file_pattern_array+=("${ignore_file_pattern}")
+			--hook:ignore-pattern=*)
+				local ignore_pattern="${1#--hook:ignore-pattern=}"
+				if [[ -n "${ignore_pattern}" ]]; then
+					ignore_pattern_array+=("${ignore_pattern}")
 				else
-					printf "ERROR: Empty hook:ignore-file argument'\n" >&2
+					printf "ERROR: Empty hook:ignore-pattern argument'\n" >&2
 					exit 1
 				fi
 				shift
@@ -214,15 +214,15 @@ function parse_file_hook_args {
 	#
 	all_files+=("$@")
 
-	# Filter out vendor entries and ignore_file_pattern_array
+	# Filter out ignored dir and pattern entries
 	#
 	FILES=()
 	local file
 	for file in "${all_files[@]}"; do
-    if is_path_ignored_by_dir_pattern "${file}" || is_path_ignored_by_file_pattern "${file}"; then
-      continue
-    fi
-    FILES+=("${file}")
+		if is_path_ignored_by_dir_pattern "${file}" || is_path_ignored_by_pattern "${file}"; then
+			continue
+		fi
+		FILES+=("${file}")
 	done
 }
 
@@ -257,12 +257,12 @@ function parse_repo_hook_args {
 				fi
 				shift
 				;;
-			--hook:ignore-file=*)
-				local ignore_file_pattern="${1#--hook:ignore-file=}"
-				if [[ -n "${ignore_file_pattern}" ]]; then
-					ignore_file_pattern_array+=("${ignore_file_pattern}")
+			--hook:ignore-pattern=*)
+				local ignore_pattern="${1#--hook:ignore-pattern=}"
+				if [[ -n "${ignore_pattern}" ]]; then
+					ignore_pattern_array+=("${ignore_pattern}")
 				else
-					printf "ERROR: Empty hook:ignore-file argument'\n" >&2
+					printf "ERROR: Empty hook:ignore-pattern argument'\n" >&2
 					exit 1
 				fi
 				shift
@@ -313,9 +313,7 @@ function find_module_roots() {
 			path=$(dirname "${path}")
 		done
 		if [ -f "${path}/go.mod" ]; then
-      if is_path_ignored_by_file_pattern "${path}/go.mod"; then
-        continue
-      fi
+			# TODO pattern-ignore check for go.mod ?
 			printf "%s\n" "${path}"
 		fi
 	done
