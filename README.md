@@ -34,7 +34,8 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # Consider adding aliases to longer-named hooks for easier CLI usage.
     # ==========================================================================
 -   repo: https://github.com/tekwizely/pre-commit-golang
-    rev: master
+    # See 'pre-commit help autoupdate'
+    rev: v1.0.0-rc.1
     hooks:
     #
     # Go Build
