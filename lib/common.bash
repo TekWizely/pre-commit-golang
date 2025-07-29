@@ -355,6 +355,16 @@ function parse_repo_hook_args {
 				fi
 				shift
 				;;
+			--hook:ignore-file=*)
+				local ignore_file="${1#--hook:ignore-file=}"
+				if [[ -n "${ignore_file}" ]]; then
+					ignore_file_pattern_array+=("${ignore_file}")
+				else
+					printf "ERROR: Empty hook:ignore-file argument'\n" >&2
+					exit 1
+				fi
+				shift
+				;;
 			--hook:ignore-dir=*)
 				local ignore_dir="${1#--hook:ignore-dir=}"
 				if [[ -n "${ignore_dir}" ]]; then
