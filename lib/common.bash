@@ -200,7 +200,7 @@ is_path_ignored_by_dir_pattern() {
 # Creates global vars:
 #   ENV_VARS: List of variables to assign+export before invoking command
 #   OPTIONS : List of options to pass to command
-#   FILES   : List of files to process, filtered against ignored dir and pattern entries
+#   FILES   : List of files to process, filtered against ignored dir, file and pattern entries
 #
 # NOTE: We consume the first (optional) '--' we encounter.
 #       If you want to pass '--' to the command, you'll need to use 2 of them
@@ -300,7 +300,7 @@ function parse_file_hook_args {
 	#
 	all_files+=("$@")
 
-	# Filter out ignored dir and pattern entries
+	# Filter out ignored dir, file and pattern entries
 	#
 	FILES=()
 	local file
