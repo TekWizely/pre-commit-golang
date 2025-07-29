@@ -3,6 +3,7 @@
 : "${use_dot_dot_dot:=1}"
 : "${error_on_output:=0}"
 : "${ignore_pattern_array:=}"
+: "${ignore_file_pattern_array:=}"
 : "${ignore_dir_pattern_array:=}"
 ignore_dir_pattern_array+=("vendor")
 
@@ -56,9 +57,71 @@ is_path_ignored_by_pattern() {
 	local path="$1"
 	local pattern
 	for pattern in "${ignore_pattern_array[@]}"; do
-		# shellcheck disable=SC2053  # Patterns should be unquoted
-		if [[ "${path}" == ${pattern} ]]; then
-			return 0
+		# shellcheck disable=SC2254  # Patterns should be unquoted
+		case "$path" in
+			$pattern)
+				return 0
+				;;
+		esac
+	done
+
+	return 1
+}
+
+##
+# is_path_ignored_by_file_pattern
+#
+# Determines whether a given path matches an ignored file pattern.
+#
+# Arguments:
+#   $1 - The path to check against the ignored patterns.  Assumed to be a full file path.
+#
+# Globals:
+#   ignore_file_pattern_array - An array or string of ignored file patterns used for matching.
+#
+# Returns:
+#   0 (success) if the path matches an ignored file pattern and should be ignored.
+#   1 (failure) otherwise.
+#
+is_path_ignored_by_file_pattern() {
+	local path="$1"
+	local pattern
+	for pattern in "${ignore_file_pattern_array[@]}"; do
+		# If empty, then skip.  TODO Error?
+		if [[ -z "$pattern" ]]; then
+			continue
+		fi
+		# Rule: Pattern is just a filename (no slashes) → match against filename portion of path
+		if [[ "$pattern" == "$(basename "$pattern")" ]]; then
+			# shellcheck disable=SC2254  # Patterns should be unquoted
+			case "$(basename "$path")" in
+				$pattern)
+					return 0
+					;;
+			esac
+		else
+			# If pattern starts with './' then normalize it to just '/'
+			if [[ "$pattern" == ./* ]]; then
+				pattern="${pattern#.}" # Remove leading '.'
+			fi
+			# Rule: Pattern starts with '/' → must match the beginning of the path
+			if [[ "$pattern" == /* ]]; then
+				pattern="${pattern#/}" # Remove leading slash
+				# shellcheck disable=SC2254  # Patterns should be unquoted
+				case "$path" in
+					$pattern)
+						return 0
+						;;
+				esac
+			else
+				# Rule: Pattern without leading slash → match anywhere in the path
+				# shellcheck disable=SC2254  # Patterns should be unquoted
+				case "$path" in
+					$pattern | */$pattern)
+						return 0
+						;;
+				esac
+			fi
 		fi
 	done
 
@@ -71,7 +134,8 @@ is_path_ignored_by_pattern() {
 # Determines whether a given path matches an ignored directory pattern.
 #
 # Arguments:
-#   $1 - The path to check against the ignored patterns.
+#   $1 - The path to check against the ignored patterns.  Assumed to be a directory path (i.e. `$(dirname "${file}")`).
+#        Accepts '', '.', '/' as 'root' directory for matching purposes.
 #
 # Globals:
 #   ignore_dir_pattern_array - An array or string of ignored directory patterns used for matching.
@@ -82,37 +146,49 @@ is_path_ignored_by_pattern() {
 #
 is_path_ignored_by_dir_pattern() {
 	local path="$1"
+	# If path = '' || '.' then assume '/' (root)
+	if [[ -z "$path" || "$path" == '.' ]]; then
+		path='/'
+	fi
 	local pattern
 	for pattern in "${ignore_dir_pattern_array[@]}"; do
+		# If empty, then skip.  TODO Error?
+		if [[ -z "$pattern" ]]; then
+			continue
+		fi
+		# If pattern = '/' || '.' || './' || '*' then it matches everything
+		if [[ "$pattern" == '/' || "$pattern" == '.' || "$pattern" == './' || "$pattern" == "*" ]]; then
+			return 0
+		fi
+		# If path is '/' and we didn't match above, then skip
+		if [[ "$path" == '/' ]]; then
+			continue
+		fi
+		# Trailing '/' is optional and (generally) assumed, so remove if present
+		if [[ "$pattern" == */ ]]; then
+			pattern="${pattern%/}" # Remove trailing slash
+		fi
+		# If pattern starts with './' then normalize it to just '/'
+		if [[ "$pattern" == ./* ]]; then
+			pattern="${pattern#.}" # Remove leading '.'
+		fi
+		# Rule: Pattern starts with '/' → must match the beginning of the path
 		if [[ "$pattern" == /* ]]; then
-			# Rule: Pattern starts with '/' → must match the beginning of the path
-			local base="${pattern#/}"
-
-			if [[ "$base" == */ ]]; then
-				# Rule: Pattern like /foo/ → matches paths starting with 'foo/'
-				base="${base%/}"
-				if [[ "$path" == "$base/"* ]]; then
+			pattern="${pattern#/}" # Remove leading slash
+			# shellcheck disable=SC2254  # Patterns should be unquoted
+			case "$path" in
+				$pattern | $pattern/*)
 					return 0
-				fi
-			else
-				# Rule: Pattern like /foo → matches 'foo' or any path starting with 'foo/'
-				if [[ "$path" == "$base" || "$path" == "$base/"* ]]; then
-					return 0
-				fi
-			fi
+					;;
+			esac
 		else
 			# Rule: Pattern without leading slash → match anywhere in the path
-			if [[ "$pattern" == */ ]]; then
-				# Rule: Pattern like foo/ → must appear as a directory somewhere in the path
-				if [[ "$path" == *"/${pattern%/}/"* || "$path" == "${pattern}"* ]]; then
+			# shellcheck disable=SC2254  # Patterns should be unquoted
+			case "$path" in
+				$pattern | $pattern/* | */$pattern | */$pattern/*)
 					return 0
-				fi
-			else
-				# Rule: Pattern like foo → matches if it appears as a complete directory
-				if [[ "$path" == "$pattern" || "$path" == "$pattern/"* || "$path" == */"$pattern" || "$path" == */"$pattern/"* ]]; then
-					return 0
-				fi
-			fi
+					;;
+			esac
 		fi
 	done
 
@@ -156,6 +232,16 @@ function parse_file_hook_args {
 					ignore_pattern_array+=("${ignore_pattern}")
 				else
 					printf "ERROR: Empty hook:ignore-pattern argument'\n" >&2
+					exit 1
+				fi
+				shift
+				;;
+			--hook:ignore-file=*)
+				local ignore_file="${1#--hook:ignore-file=}"
+				if [[ -n "${ignore_file}" ]]; then
+					ignore_file_pattern_array+=("${ignore_file}")
+				else
+					printf "ERROR: Empty hook:ignore-file argument'\n" >&2
 					exit 1
 				fi
 				shift
@@ -219,7 +305,9 @@ function parse_file_hook_args {
 	FILES=()
 	local file
 	for file in "${all_files[@]}"; do
-		if is_path_ignored_by_dir_pattern "${file}" || is_path_ignored_by_pattern "${file}"; then
+		local file_dir
+		file_dir=$(dirname "${file}")
+		if is_path_ignored_by_dir_pattern "${file_dir}" || is_path_ignored_by_file_pattern "${file}" || is_path_ignored_by_pattern "${file}"; then
 			continue
 		fi
 		FILES+=("${file}")

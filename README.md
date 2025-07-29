@@ -26,7 +26,7 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #       that Pre-Commit passes into the hook.
     #       For repo-based hooks, '--' is not needed.
     #
-    # NOTE: You can pass environment variables to hooks using args with the 
+    # NOTE: You can pass environment variables to hooks using args with the
     #       following format:
     #
     #           --hook:env:NAME=VALUE
@@ -226,6 +226,115 @@ The hook script will detect this argument and set the variable `NAME` to the val
 You can pass multiple  `--hook:env:` arguments.
 
 The arguments can appear anywhere in the `args:` list.
+
+#### Passing Ignore Patterns To Hooks
+
+You can pass arguments to hooks to specify files / directories to ignore.
+
+##### Ignoring Directories
+
+To specify a directory to ignore, use:
+
+* `--hook:ignore-dir=PATTERN`
+
+**Pattern Syntax**
+
+Here's a table with examples of how the directory ignore patterns work:
+
+| <sub>(see legend below)</sub> | `/foo` | `/foo/bar` | `/foo/*/bar` | `bar` | `bing/bar` | `bing/*/bar` | `foo/*/bang/*/bar` |
+|:------------------------------|:------:|:----------:|:------------:|:-----:|:----------:|:------------:|:------------------:|
+| `file`                        |        |            |              |       |            |              |                    |
+| `foo/file`                    |   ✔    |            |              |       |            |              |                    |
+| `foo/bar/file`                |   ✔    |     ✔      |              |   ✔   |            |              |                    |
+| `foo/bing/bar/file`           |   ✔    |            |      ✔       |   ✔   |     ✔      |              |                    |
+| `foo/bing/bang/bar/file`      |   ✔    |            |      ✔       |   ✔   |            |      ✔       |                    |
+| `foo/bing/bang/baz/bar/file`  |   ✔    |            |      ✔       |   ✔   |            |      ✔       |         ✔          |
+| `bar/file`                    |        |            |              |   ✔   |            |              |                    |
+| `bing/bar/file`               |        |            |              |   ✔   |     ✔      |              |                    |
+| `bing/bang/bar/file`          |        |            |              |   ✔   |            |      ✔       |                    |
+
+<sub>rows = filenames. columns = ignore patterns. ✔ = directory ignored (matched).</sub>
+
+NOTES:
+* Only the directory portion of the filename is considered for matching
+  * File `foo/bar/file` would attempt to match patterns against the directory `foo/bar`
+* Patterns with leading slash (`/`) indicate that the pattern is _anchored_ and must match the **beginning** of the directory path
+  * Pattern `/bar` would match filenames `bar/file` and `bar/bang/file`, but **not** `foo/bar/file`
+* Patterns without leading slash (`/`) indicate that the pattern is _floating_ and can match **anywhere** in the directory path
+  * Pattern `bar` would match **all** filenames `bar/file`, `bar/bang/file` and `foo/bar/file`
+* Trailing slashes (`foo/`) are not supported and are ignored
+* Explicit Leading and trailing wildcards (`*/foo`, `foo/*`, `*/foo/*`) are not supported
+* Recursive directory patterns (`**`) are not supported
+
+##### Ignoring Files
+
+To specify files to ignore, use:
+
+* `--hook:ignore-file=PATTERN`
+
+**Pattern Syntax**
+
+Here's a table with examples of how the file ignore patterns work:
+
+| <sub>(see legend below)</sub> | `file1.txt` | `file?.txt` | `file2.*` | `*.md` | `bar/*.md` | `/bar/*.txt` |
+|:------------------------------|:-----------:|:-----------:|:---------:|:------:|:----------:|:------------:|
+| `file1.txt`                   |      ✔      |      ✔      |           |        |            |              |
+| `file2.txt`                   |             |      ✔      |     ✔     |        |            |              |
+| `file3.md`                    |             |             |           |   ✔    |            |              |
+| `foo/file1.txt`               |      ✔      |      ✔      |           |        |            |              |
+| `bar/file1.txt`               |      ✔      |      ✔      |           |        |            |      ✔       |
+| `bar/file2.md`                |             |             |     ✔     |   ✔    |     ✔      |              |
+| `foo/bar/file4.txt`           |             |      ✔      |           |        |            |              |
+| `foo/bar/file5.md`            |             |             |           |   ✔    |     ✔      |              |
+
+<sub>rows = filenames. columns = ignore patterns. ✔ = file ignored (matched).</sub>
+
+NOTES:
+* Patterns with no slashes (`/`) are only matched against the filename portion of the file path
+    * Pattern `file.txt` would match filenames `file.txt`, `foo/file.txt`, and `bar/file.txt`
+* Patterns with leading slash (`/`) indicate that the pattern is _anchored_ and must match the **full** file path
+    * Pattern `/bar/file` would match filename `bar/file`, but **not** `foo/bar/file`
+* Patterns without leading slash (`/`) indicate that the pattern is _trailing_ and just needs to match the **end** of the file path
+    * Pattern `bar/file` would match filenames `bar/file` and `foo/bar/file`
+* Explicit Leading  (`*/foo/file`) are not supported
+* Recursive directory patterns (`**`) are not supported
+
+
+##### Ignore By Pattern
+
+If the directory and file-based convenience options are not enough, you can specify a more complicated (bash-specific) pattern.
+
+To specify these types of patterns to ignore, use:
+
+* `--hook:ignore-pattern=PATTERN`
+
+**Pattern Syntax**
+
+Here's a table with examples of how the general ignore patterns work:
+
+| <sub>(see legend below)</sub> | `file` | `foo/bar/*` | `foo/*/bar/*` | `*/file` | `*/bar/file` | `*/bar/*` | `*/bing/*/bar/*` | `*/b?ng/*/file` |
+|:------------------------------|:------:|:-----------:|:-------------:|:--------:|:------------:|:---------:|:----------------:|:---------------:|
+| `file`                        |   ✔    |             |               |          |              |           |                  |                 |
+| `foo/file`                    |        |             |               |    ✔     |              |           |                  |                 |
+| `foo/bar/file`                |        |      ✔      |               |    ✔     |      ✔       |     ✔     |                  |                 |
+| `foo/bing/bar/file`           |        |             |       ✔       |    ✔     |      ✔       |     ✔     |                  |        ✔        |
+| `foo/bang/bar/file`           |        |             |       ✔       |    ✔     |      ✔       |     ✔     |                  |        ✔        |
+| `foo/bing/bang/bar/file`      |        |             |       ✔       |    ✔     |      ✔       |     ✔     |        ✔         |        ✔        |
+| `foo/bing/bang/baz/bar/file`  |        |             |       ✔       |    ✔     |      ✔       |     ✔     |        ✔         |        ✔        |
+| `bar/file`                    |        |             |               |    ✔     |              |           |                  |                 |
+| `bing/bar/file`               |        |             |               |    ✔     |      ✔       |     ✔     |                  |                 |
+| `bing/bang/bar/file`          |        |             |               |    ✔     |      ✔       |     ✔     |                  |        ✔        |
+| `.file`                       |        |             |               |          |              |           |                  |                 |
+| `.bar/file`                   |        |             |               |    ✔     |              |           |                  |                 |
+| `foo/.bang/bar/file`          |        |             |       ✔       |    ✔     |      ✔       |     ✔     |                  |                 |
+
+<sub>rows = filenames. columns = ignore patterns. ✔ = file ignored (matched).</sub>
+
+NOTES:
+* Patterns are matched against the **full** (relative) file path
+* Patterns are Bash-specific (although _possibly_ POSIX compliant) and are **not** regular expressions (regex)
+* See the Official Bash documentation for [Pattern Matching](https://www.gnu.org/software/bash/manual/bash.html#Pattern-Matching)
+* Patterns based on `extglob` setting/syntax are **not** supported
 
 #### Always Run
 By default, hooks ONLY run when matching file types (usually `*.go`) are staged.
