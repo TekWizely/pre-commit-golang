@@ -423,12 +423,12 @@ This can be useful, for example, for hooks that display warnings, but don't gene
 ### go-build
 Compiles packages, along with their dependencies, but does not install the results.
 
-| Hook ID             | Description
-|---------------------|------------
-| `go-build-mod`      | Run `'cd $(mod_root $FILE); go build -o /dev/null [$ARGS] ./...'` for each staged .go file
-| `go-build-pkg`      | Run `'go build -o /dev/null [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `go-build-repo-mod` | Run `'cd $(mod_root); go build -o /dev/null [$ARGS] ./...'` for each module in the repo
-| `go-build-repo-pkg` | Run `'go build -o /dev/null [$ARGS] ./...'` in repo root folder
+| Hook ID             | Description                                                                                |
+|---------------------|--------------------------------------------------------------------------------------------|
+| `go-build-mod`      | Run `'cd $(mod_root $FILE); go build -o /dev/null [$ARGS] ./...'` for each staged .go file |
+| `go-build-pkg`      | Run `'go build -o /dev/null [$ARGS] ./$(dirname $FILE)'` for each staged .go file          |
+| `go-build-repo-mod` | Run `'cd $(mod_root); go build -o /dev/null [$ARGS] ./...'` for each module in the repo    |
+| `go-build-repo-pkg` | Run `'go build -o /dev/null [$ARGS] ./...'` in repo root folder                            |
 
 ##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
@@ -441,10 +441,10 @@ Comes with Golang ( [golang.org](https://golang.org/) )
 ### go-mod-tidy
 Makes sure `go.mod` matches the source code in the module.
 
-| Hook ID            | Description
-|--------------------|------------
-| `go-mod-tidy`      | Run `'cd $(mod_root $FILE); go mod tidy [$ARGS] ./...'` for each staged .go file
-| `go-mod-tidy-repo` | Run `'cd $(mod_root); go mod tidy [$ARGS] ./...'` for each module in the repo
+| Hook ID            | Description                                                                      |
+|--------------------|----------------------------------------------------------------------------------|
+| `go-mod-tidy`      | Run `'cd $(mod_root $FILE); go mod tidy [$ARGS] ./...'` for each staged .go file |
+| `go-mod-tidy-repo` | Run `'cd $(mod_root); go mod tidy [$ARGS] ./...'` for each module in the repo    |
 
 ##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
@@ -457,12 +457,12 @@ Comes with Golang ( [golang.org](https://golang.org/) )
 ### go-test
 Automates testing, printing a summary of test results.
 
-| Hook ID            | Description
-|--------------------|------------
-| `go-test-mod`      | Run `'cd $(mod_root $FILE); go test [$ARGS] ./...'` for each staged .go file
-| `go-test-pkg`      | Run `'go test [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `go-test-repo-mod` | Run `'cd $(mod_root); go test [$ARGS] ./...'` for each module in the repo
-| `go-test-repo-pkg` | Run `'go test [$ARGS] ./...'` in repo root folder
+| Hook ID            | Description                                                                  |
+|--------------------|------------------------------------------------------------------------------|
+| `go-test-mod`      | Run `'cd $(mod_root $FILE); go test [$ARGS] ./...'` for each staged .go file |
+| `go-test-pkg`      | Run `'go test [$ARGS] ./$(dirname $FILE)'` for each staged .go file          |
+| `go-test-repo-mod` | Run `'cd $(mod_root); go test [$ARGS] ./...'` for each module in the repo    |
+| `go-test-repo-pkg` | Run `'go test [$ARGS] ./...'` in repo root folder                            |
 
 ##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
@@ -475,12 +475,12 @@ Comes with Golang ( [golang.org](https://golang.org/) )
 ### go-sec
 Inspects source code for security problems by scanning the Go AST.
 
-| Hook ID           | Description
-|-------------------|------------
-| `go-sec-mod`      | Run `'cd $(mod_root $FILE); gosec [$ARGS] ./...'` for each staged .go file
-| `go-sec-pkg`      | Run `'gosec [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `go-sec-repo-mod` | Run `'cd $(mod_root); gosec [$ARGS] ./...'` for each module in the repo
-| `go-sec-repo-pkg` | Run `'gosec [$ARGS] ./...'` in repo root folder
+| Hook ID           | Description                                                                |
+|-------------------|----------------------------------------------------------------------------|
+| `go-sec-mod`      | Run `'cd $(mod_root $FILE); gosec [$ARGS] ./...'` for each staged .go file |
+| `go-sec-pkg`      | Run `'gosec [$ARGS] ./$(dirname $FILE)'` for each staged .go file          |
+| `go-sec-repo-mod` | Run `'cd $(mod_root); gosec [$ARGS] ./...'` for each module in the repo    |
+| `go-sec-repo-pkg` | Run `'gosec [$ARGS] ./...'` in repo root folder                            |
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -495,12 +495,12 @@ bingo install github.com/securego/gosec/v2/cmd/gosec
 ### go-staticcheck
 A state of the art linter for the Go programming language. Using static analysis, it finds bugs and performance issues, offers simplifications, and enforces style rules.
 
-| Hook ID                   | Description
-|---------------------------|------------
-| `go-staticcheck-mod`      | Run `'cd $(mod_root $FILE); staticcheck [$ARGS] ./...'` for each staged .go file
-| `go-staticcheck-pkg`      | Run `'staticcheck [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `go-staticcheck-repo-mod` | Run `'cd $(mod_root); staticcheck [$ARGS] ./...'` for each module in the repo
-| `go-staticcheck-repo-pkg` | Run `'staticcheck [$ARGS] ./...'` in repo root folder
+| Hook ID                   | Description                                                                      |
+|---------------------------|----------------------------------------------------------------------------------|
+| `go-staticcheck-mod`      | Run `'cd $(mod_root $FILE); staticcheck [$ARGS] ./...'` for each staged .go file |
+| `go-staticcheck-pkg`      | Run `'staticcheck [$ARGS] ./$(dirname $FILE)'` for each staged .go file          |
+| `go-staticcheck-repo-mod` | Run `'cd $(mod_root); staticcheck [$ARGS] ./...'` for each module in the repo    |
+| `go-staticcheck-repo-pkg` | Run `'staticcheck [$ARGS] ./...'` in repo root folder                            |
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -517,12 +517,12 @@ Recommends struct field rearrangements to provide for maximum space/allocation e
 
  - Can modify files (see `-apply`)
 
-| Hook ID                  | Description
-|--------------------------|------------
-| `go-structslop-mod`      | Run `'cd $(mod_root $FILE); structslop [$ARGS] ./...'` for each staged .go file
-| `go-structslop-pkg`      | Run `'structslop [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `go-structslop-repo-mod` | Run `'cd $(mod_root); structslop [$ARGS] ./...'` for each module in the repo
-| `go-structslop-repo-pkg` | Run `'structslop [$ARGS] ./...'` in repo root folder
+| Hook ID                  | Description                                                                     |
+|--------------------------|---------------------------------------------------------------------------------|
+| `go-structslop-mod`      | Run `'cd $(mod_root $FILE); structslop [$ARGS] ./...'` for each staged .go file |
+| `go-structslop-pkg`      | Run `'structslop [$ARGS] ./$(dirname $FILE)'` for each staged .go file          |
+| `go-structslop-repo-mod` | Run `'cd $(mod_root); structslop [$ARGS] ./...'` for each module in the repo    |
+| `go-structslop-repo-pkg` | Run `'structslop [$ARGS] ./...'` in repo root folder                            |
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -545,13 +545,13 @@ Printf calls whose arguments do not align with the format string. Vet uses
 heuristics that do not guarantee all reports are genuine problems, but it
 can find errors not caught by the compilers.
 
-| Hook ID           | Description
-|-------------------|------------
-| `go-vet`          | Run `'go vet [$ARGS] $FILE'` for each staged .go file
-| `go-vet-mod`      | Run `'cd $(mod_root $FILE); go vet [$ARGS] ./...'` for each staged .go file
-| `go-vet-pkg`      | Run `'go vet [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `go-vet-repo-mod` | Run `'cd $(mod_root); go vet [$ARGS] ./...'` for each module in the repo
-| `go-vet-repo-pkg` | Run `'go vet [$ARGS] ./...'` in repo root folder
+| Hook ID           | Description                                                                 |
+|-------------------|-----------------------------------------------------------------------------|
+| `go-vet`          | Run `'go vet [$ARGS] $FILE'` for each staged .go file                       |
+| `go-vet-mod`      | Run `'cd $(mod_root $FILE); go vet [$ARGS] ./...'` for each staged .go file |
+| `go-vet-pkg`      | Run `'go vet [$ARGS] ./$(dirname $FILE)'` for each staged .go file          |
+| `go-vet-repo-mod` | Run `'cd $(mod_root); go vet [$ARGS] ./...'` for each module in the repo    |
+| `go-vet-repo-pkg` | Run `'go vet [$ARGS] ./...'` in repo root folder                            |
 
 ##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
@@ -566,10 +566,10 @@ Formats Go programs. It uses tabs for indentation and blanks for alignment. Alig
 
  - Can modify files (see `-w`)
 
-| Hook ID       | Description
-|---------------|------------
-| `go-fmt`      | Run `'gofmt -l -d [$ARGS] $FILE'` for each staged .go file
-| `go-fmt-repo` | Run `'gofmt -l -d [$ARGS] .'` in repo root folder
+| Hook ID       | Description                                                |
+|---------------|------------------------------------------------------------|
+| `go-fmt`      | Run `'gofmt -l -d [$ARGS] $FILE'` for each staged .go file |
+| `go-fmt-repo` | Run `'gofmt -l -d [$ARGS] .'` in repo root folder          |
 
 ##### Install
 Comes with Golang ( [golang.org](https://golang.org/) )
@@ -592,10 +592,10 @@ Enforce a stricter format than `gofmt`, while being backwards compatible.
  - Replaces `go-fmt`
  - Can modify files (see `-w`)
 
-| Hook ID         | Description
-|-----------------|------------
-| `go-fumpt`      | Run `'gofumpt -l -d [$ARGS] $FILE'` for each staged .go file
-| `go-fumpt-repo` | Run `'gofumpt -l -d [$ARGS] .'` in repo root folder
+| Hook ID         | Description                                                  |
+|-----------------|--------------------------------------------------------------|
+| `go-fumpt`      | Run `'gofumpt -l -d [$ARGS] $FILE'` for each staged .go file |
+| `go-fumpt-repo` | Run `'gofumpt -l -d [$ARGS] .'` in repo root folder          |
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -621,10 +621,10 @@ Updates your Go import lines, adding missing ones and removing unreferenced ones
  - Replaces `go-fmt`
  - Can modify files (see `-w`)
 
-| Hook ID           | Description
-|-------------------|------------
-| `go-imports`      | Run `'goimports -l -d [$ARGS] $FILE'` for each staged .go file
-| `go-imports-repo` | Run `'goimports -l -d [$ARGS] .'` in repo root folder
+| Hook ID           | Description                                                    |
+|-------------------|----------------------------------------------------------------|
+| `go-imports`      | Run `'goimports -l -d [$ARGS] $FILE'` for each staged .go file |
+| `go-imports-repo` | Run `'goimports -l -d [$ARGS] .'` in repo root folder          |
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -652,10 +652,10 @@ Implements a Go pretty-printer (like `go-fmt`) that also adds zero-value return 
  - Replaces `go-fmt` and `go-imports`
  - Can modify files (see `-w`)
 
-| Hook ID           | Description
-|-------------------|------------
-| `go-returns`      | Run `'goreturns -l -d [$ARGS] $FILE'` for each staged .go file
-| `go-returns-repo` | Run `'goreturns -l -d [$ARGS] .'` in repo root folder
+| Hook ID           | Description                                                    |
+|-------------------|----------------------------------------------------------------|
+| `go-returns`      | Run `'goreturns -l -d [$ARGS] $FILE'` for each staged .go file |
+| `go-returns-repo` | Run `'goreturns -l -d [$ARGS] .'` in repo root folder          |
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -682,9 +682,9 @@ bingo install github.com/sqs/goreturns
 ### go-lint
 A linter for Go source code, meant to carry out the stylistic conventions put forth in [Effective Go](https://golang.org/doc/effective_go.html) and [CodeReviewComments](https://golang.org/wiki/CodeReviewComments).
 
-| Hook ID   | Description
-|-----------|------------
-| `go-lint` | Run `'golint -set_exit_status [$ARGS] $FILE'` for each staged .go file
+| Hook ID   | Description                                                            |
+|-----------|------------------------------------------------------------------------|
+| `go-lint` | Run `'golint -set_exit_status [$ARGS] $FILE'` for each staged .go file |
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -701,11 +701,11 @@ bingo install golang.org/x/lint/golint
 ### go-revive
 \~6x faster, stricter, configurable, extensible, and beautiful drop-in replacement for golint.
 
-| Hook ID   | Description
-|-----------|------------
-| `go-revive`          | Run `'revive [$ARGS] $FILE'` for each staged .go file
-| `go-revive-mod`      | Run `'cd $(mod_root $FILE); revive [$ARGS] ./...'` for each staged .go file
-| `go-revive-repo-mod` | Run `'cd $(mod_root); revive [$ARGS] ./...'` for each module in the repo
+| Hook ID              | Description                                                                 |
+|----------------------|-----------------------------------------------------------------------------|
+| `go-revive`          | Run `'revive [$ARGS] $FILE'` for each staged .go file                       |
+| `go-revive-mod`      | Run `'cd $(mod_root $FILE); revive [$ARGS] ./...'` for each staged .go file |
+| `go-revive-repo-mod` | Run `'cd $(mod_root); revive [$ARGS] ./...'` for each module in the repo    |
 
 ##### Support for Repository-Level Config
 As of time of writing, revive only auto-checks for configs in `${HOME}/revive.toml`, and doesn't check the local folder (ie. `${REPO_ROOT}/revive.toml`).
@@ -745,9 +745,9 @@ You can use the `"verbose: true"` hook configuration to always show hook output.
 ### go-critic
 The most opinionated Go source code linter for code audit.
 
-| Hook ID     | Description
-|-------------|------------
-| `go-critic` | Run `'gocritic check [$ARGS] $FILE'` for each staged .go file
+| Hook ID     | Description                                                   |
+|-------------|---------------------------------------------------------------|
+| `go-critic` | Run `'gocritic check [$ARGS] $FILE'` for each staged .go file |
 
 ##### Install
    https://github.com/go-critic/go-critic#installation
@@ -780,13 +780,13 @@ A FAST linter aggregator, with colored output, fewer false-positives, and suppor
  - Can report only new issues (see `--new`)
  - Can modify files (see `--fix`)
 
-| Hook ID                  | Description
-|--------------------------|------------
-| `golangci-lint`          | Run `'golangci-lint run [$ARGS] $FILE'` for each staged .go file
-| `golangci-lint-mod`      | Run `'cd $(mod_root $FILE); golangci-lint run [$ARGS] ./...'` for each staged .go file
-| `golangci-lint-pkg`      | Run `'golangci-lint run [$ARGS] ./$(dirname $FILE)'` for each staged .go file
-| `golangci-lint-repo-mod` | Run `'cd $(mod_root); golangci-lint run [$ARGS] ./...'` for each module in the repo
-| `golangci-lint-repo-pkg` | Run `'golangci-lint run [$ARGS] ./...'` in repo root folder
+| Hook ID                  | Description                                                                            |
+|--------------------------|----------------------------------------------------------------------------------------|
+| `golangci-lint`          | Run `'golangci-lint run [$ARGS] $FILE'` for each staged .go file                       |
+| `golangci-lint-mod`      | Run `'cd $(mod_root $FILE); golangci-lint run [$ARGS] ./...'` for each staged .go file |
+| `golangci-lint-pkg`      | Run `'golangci-lint run [$ARGS] ./$(dirname $FILE)'` for each staged .go file          |
+| `golangci-lint-repo-mod` | Run `'cd $(mod_root); golangci-lint run [$ARGS] ./...'` for each module in the repo    |
+| `golangci-lint-repo-pkg` | Run `'golangci-lint run [$ARGS] ./...'` in repo root folder                            |
 
 ##### Install (via [bingo](https://github.com/TekWizely/bingo))
 ```
@@ -825,14 +825,14 @@ bingo install github.com/golangci/golangci-lint/cmd/golangci-lint
 
 Using the `my-cmd-*` hooks, you can invoke custom go tools in various contexts.
 
- | Hook ID           | Description
- |-------------------|------------
- | `my-cmd`          | Run `'$ARGS[0] [$ARGS[1:]] $FILE'` for each staged .go file
- | `my-cmd-mod`      | Run `'cd $(mod_root $FILE); GO111MODULE=on $ARGS[0] [$ARGS[1:]]'` for each staged .go file
- | `my-cmd-pkg`      | Run `'GO111MODULE=off $ARGS[0] [$ARGS[1:]] ./$(dirname $FILE)'` for each staged .go file
- | `my-cmd-repo`     | Run `'$ARGS[0] [$ARGS[1:]]'` in the repo root folder
- | `my-cmd-repo-mod` | Run `'cd $(mod_root); GO111MODULE=on $ARGS[0] [$ARGS[1:]]'` for each module in the repo
- | `my-cmd-repo-pkg` | Run `'GO111MODULE=off $ARGS[0] [$ARGS[1:]]` in repo root folder
+| Hook ID           | Description                                                                                |
+|-------------------|--------------------------------------------------------------------------------------------|
+| `my-cmd`          | Run `'$ARGS[0] [$ARGS[1:]] $FILE'` for each staged .go file                                |
+| `my-cmd-mod`      | Run `'cd $(mod_root $FILE); GO111MODULE=on $ARGS[0] [$ARGS[1:]]'` for each staged .go file |
+| `my-cmd-pkg`      | Run `'GO111MODULE=off $ARGS[0] [$ARGS[1:]] ./$(dirname $FILE)'` for each staged .go file   |
+| `my-cmd-repo`     | Run `'$ARGS[0] [$ARGS[1:]]'` in the repo root folder                                       |
+| `my-cmd-repo-mod` | Run `'cd $(mod_root); GO111MODULE=on $ARGS[0] [$ARGS[1:]]'` for each module in the repo    |
+| `my-cmd-repo-pkg` | Run `'GO111MODULE=off $ARGS[0] [$ARGS[1:]]` in repo root folder                            |
 
 #### Configuring the hooks
 
