@@ -120,6 +120,20 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: golangci-lint-repo-mod
     -   id: golangci-lint-repo-pkg
     #
+    # GolangCI-Lint v2
+    # - Fast Multi-Linter using v2 architecture
+    # - Supports config files with `version: "2"`
+    # - Includes built-in formatting command
+    # - Requires `golangci-lint-v2` binary
+    #
+    -   id: golangci-lint-v2
+    -   id: golangci-lint-v2-mod
+    -   id: golangci-lint-v2-pkg
+    -   id: golangci-lint-v2-repo-mod
+    -   id: golangci-lint-v2-repo-pkg
+    -   id: golangci-lint-v2-fmt
+    -   id: golangci-lint-v2-fmt-repo
+    #
     # Invoking Custom Go Tools
     # - Configured *entirely* through the `args` attribute, ie:
     #   args: [ go, test, ./... ]
@@ -416,6 +430,7 @@ This can be useful, for example, for hooks that display warnings, but don't gene
    - [go-revive](#go-revive)
  - GolangCI-Lint
    - [golangci-lint](#golangci-lint)
+   - [golangci-lint-v2](#golangci-lint-v2)
  - Invoking Custom Tools
    - [my-cmd](#my-cmd)
 
@@ -819,6 +834,73 @@ bingo install github.com/golangci/golangci-lint/cmd/golangci-lint
 ##### Config File Help:
  - https://github.com/golangci/golangci-lint#config-file
  - `golangci-lint config -h`
+
+----------
+### golangci-lint-v2
+A FAST linter aggregator using golangci-lint v2 architecture, with enhanced colored output, fewer false-positives, and support for v2 yaml/toml configuration files.
+
+ - Uses golangci-lint v2 architecture (supports `version: "2"` in config files)
+ - Manages multiple linters with improved performance
+ - Can replace many/most other hooks
+ - Can report only new issues (see `--new`)
+ - Can modify files (see `--fix`)
+ - Includes built-in formatting command (`fmt`)
+
+| Hook ID                      | Description                                                                                  |
+|------------------------------|----------------------------------------------------------------------------------------------|
+| `golangci-lint-v2`           | Run `'golangci-lint-v2 run [$ARGS] $FILE'` for each staged .go file                         |
+| `golangci-lint-v2-mod`       | Run `'cd $(mod_root $FILE); golangci-lint-v2 run [$ARGS] ./...'` for each staged .go file  |
+| `golangci-lint-v2-pkg`       | Run `'golangci-lint-v2 run [$ARGS] ./$(dirname $FILE)'` for each staged .go file           |
+| `golangci-lint-v2-repo-mod`  | Run `'cd $(mod_root); golangci-lint-v2 run [$ARGS] ./...'` for each module in the repo     |
+| `golangci-lint-v2-repo-pkg`  | Run `'golangci-lint-v2 run [$ARGS] ./...'` in repo root folder                              |
+| `golangci-lint-v2-fmt`       | Run `'golangci-lint-v2 fmt [$ARGS] $FILE'` for each staged .go file                        |
+| `golangci-lint-v2-fmt-repo`  | Run `'golangci-lint-v2 fmt [$ARGS] ./...'` in repo root folder                              |
+
+##### Install
+```
+go install github.com/golangci/golangci-lint/cmd/golangci-lint-v2@latest
+```
+
+##### Configuration
+The v2 hooks require a configuration file with `version: "2"` declared:
+```yaml
+# .golangci.yaml
+version: "2"
+
+linters:
+  default: all  # Enable all linters by default
+  settings:
+    staticcheck:
+      checks: ["all"]
+formatters:
+  enable:
+    - goimports
+    - gofumpt
+issues:
+  fix: true
+```
+
+##### Useful Args
+```
+   --config PATH     : Specify config file (supports v2 format)
+   --disable linters : Disable specific linter(s)
+   --enable-all      : Enable ALL linters
+   --enable linters  : Enable specific linter(s)
+   --fast            : Run only fast linters (from enabled linters sets)
+   --fix             : Fix found issues (if supported by linter)
+   --new             : Show only new issues (see help for further details)
+   --no-config       : don't read config file
+   --presets presets : Enable presets of linters
+```
+
+##### Help
+ - https://github.com/golangci/golangci-lint#quick-start
+ - `golangci-lint-v2 run -h`
+ - `golangci-lint-v2 fmt -h`
+
+##### Config File Help:
+ - https://github.com/golangci/golangci-lint#config-file
+ - `golangci-lint-v2 config -h`
 
 ----------
 ### my-cmd
