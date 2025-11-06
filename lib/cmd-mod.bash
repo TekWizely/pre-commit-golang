@@ -1,5 +1,7 @@
 # shellcheck shell=bash
 
+: "${printf_module_announce:=}" # printf template: '%s'
+
 # shellcheck source=./common.bash
 . "$(dirname "${0}")/lib/common.bash"
 
@@ -15,6 +17,10 @@ error_code=0
 # TODO Try to reduce the redundancy by generating the dirname's first
 for sub in $(find_module_roots "${FILES[@]}" | sort -u); do
 	pushd "${sub}" > /dev/null || exit 1
+	if [ -n "${printf_module_announce}" ]; then
+		# shellcheck disable=SC2059 # Using variable as printf template
+		printf -- "${printf_module_announce}" "${sub#./}"
+	fi
 	if [ "${error_on_output:-}" -eq 1 ]; then
 		output=$(/usr/bin/env "${ENV_VARS[@]}" "${cmd[@]}" "${OPTIONS[@]}" 2>&1)
 		if [ -n "${output}" ]; then

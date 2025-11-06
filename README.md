@@ -65,6 +65,12 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: go-vet-repo-mod
     -   id: go-vet-repo-pkg
     #
+    # Go Vulncheck
+    # note: Only works with Go modules
+    #
+    -   id: go-vulncheck-mod
+    -   id: go-vulncheck-repo-mod
+    #
     # Revive
     #
     -   id: go-revive
@@ -402,6 +408,7 @@ This can be useful, for example, for hooks that display warnings, but don't gene
  - Correctness Checkers
    - [go-test](#go-test)
    - [go-vet](#go-vet)
+   - [go-vulncheck](#go-vulncheck)
    - [go-sec](#go-sec)
    - [go-staticcheck](#go-staticcheck)
    - [go-structslop](#go-structslop)
@@ -490,6 +497,28 @@ bingo install github.com/securego/gosec/v2/cmd/gosec
 ##### Help
  - https://github.com/securego/gosec#usage
  - `gosec (no args)`
+
+----------------
+### go-vulncheck
+Govulncheck reports known vulnerabilities that affect Go code. It uses static analysis of source code or a binary's symbol table to narrow down reports to only those that could affect the application.
+
+Govulncheck is an official Go tool. It is developed and maintained by the Go security team (which is part of the official Go development team at Google) and backed by the official Go Vulnerability Database.
+
+| Hook ID                 | Description                                                                      |
+|-------------------------|----------------------------------------------------------------------------------|
+| `go-vulncheck-mod`      | Run `'cd $(mod_root $FILE); govulncheck [$ARGS] ./...'` for each staged .go file |
+| `go-vulncheck-repo-mod` | Run `'cd $(mod_root); govulncheck [$ARGS] ./...'` for each module in the repo    |
+
+**NOTE:** Govulncheck only works with Go modules, hence only the `mod` hooks are implemented.
+
+##### Install (via [bingo](https://github.com/TekWizely/bingo))
+```
+bingo install golang.org/x/vuln/cmd/govulncheck
+```
+
+##### Help
+- https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck
+- `govulncheck -h`
 
 ------------------
 ### go-staticcheck

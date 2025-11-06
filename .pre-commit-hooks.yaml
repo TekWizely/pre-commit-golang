@@ -757,6 +757,41 @@
     pass_filenames: true
 
 # ==============================================================================
+# go-vulncheck-mod
+#   * Folder-Based
+#   * Recursive
+#   * Targets first parent folder with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-vulncheck-mod
+    name: 'go-vulncheck-mod'
+    entry: go-vulncheck-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root $FILE); govulncheck [$ARGS] ./...' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-vulncheck-repo-mod
+#   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-vulncheck-repo-mod
+    name: 'go-vulncheck-repo-mod'
+    entry: go-vulncheck-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root); govulncheck [$ARGS] ./...' for each module in the repo"
+    pass_filenames: false
+
+# ==============================================================================
 # golangci-lint-mod
 #   * Folder-Based
 #   * Recursive
