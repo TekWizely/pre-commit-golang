@@ -114,6 +114,12 @@ repos:
     -   id: go-vet-repo-mod
     -   id: go-vet-repo-pkg
     #
+    # Go Vulncheck
+    # note: Only works with Go modules
+    #
+    -   id: go-vulncheck-mod
+    -   id: go-vulncheck-repo-mod
+    #
     # Revive
     #
     -   id: go-revive

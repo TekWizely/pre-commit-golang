@@ -1,5 +1,7 @@
 # shellcheck shell=bash
 
+: "${printf_module_announce:=}" # printf template: '%s'
+
 # shellcheck source=./common.bash
 . "$(dirname "${0}")/lib/common.bash"
 
@@ -17,7 +19,11 @@ for file in $(find . -name go.mod | sort -u); do
 	if is_path_ignored_by_dir_pattern "${file_dir}" || is_path_ignored_by_file_pattern "${file}" || is_path_ignored_by_pattern "${file}"; then
 		continue
 	fi
-	pushd "${file_dir}" > /dev/null || exit 1
+	pushd "${file_dir}" >/dev/null || exit 1
+	if [ -n "${printf_module_announce}" ]; then
+		# shellcheck disable=SC2059 # Using variable as printf template
+		printf -- "${printf_module_announce}" "${file_dir#./}"
+	fi
 	if [ "${error_on_output:-}" -eq 1 ]; then
 		output=$(/usr/bin/env "${ENV_VARS[@]}" "${cmd[@]}" "${OPTIONS[@]}" 2>&1)
 		if [ -n "${output}" ]; then
@@ -27,6 +33,6 @@ for file in $(find . -name go.mod | sort -u); do
 	elif ! /usr/bin/env "${ENV_VARS[@]}" "${cmd[@]}" "${OPTIONS[@]}"; then
 		error_code=1
 	fi
-	popd > /dev/null || exit 1
+	popd >/dev/null || exit 1
 done
 exit $error_code
