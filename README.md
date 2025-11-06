@@ -35,7 +35,7 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     # ==========================================================================
 -   repo: https://github.com/tekwizely/pre-commit-golang
     # See 'pre-commit help autoupdate'
-    rev: v1.0.0-rc.2
+    rev: v1.0.0-rc.3
     hooks:
     #
     # Go Build
