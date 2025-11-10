@@ -170,7 +170,7 @@
     types: [go]
     exclude: '(^|/)vendor/'
     language: 'script'
-    description: "Run 'gocritic check [$ARGS] $FILE' for each staged .go file"
+    description: "Run 'go-critic check [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
 
 # ==============================================================================

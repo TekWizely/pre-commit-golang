@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-cmd=(gocritic check)
+cmd=(go-critic check)
 . "$(dirname "${0}")/lib/cmd-files.bash"
