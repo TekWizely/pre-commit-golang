@@ -774,9 +774,9 @@ You can use the `"verbose: true"` hook configuration to always show hook output.
 ### go-critic
 The most opinionated Go source code linter for code audit.
 
-| Hook ID     | Description                                                   |
-|-------------|---------------------------------------------------------------|
-| `go-critic` | Run `'gocritic check [$ARGS] $FILE'` for each staged .go file |
+| Hook ID     | Description                                                    |
+|-------------|----------------------------------------------------------------|
+| `go-critic` | Run `'go-critic check [$ARGS] $FILE'` for each staged .go file |
 
 ##### Install
    https://github.com/go-critic/go-critic#installation
@@ -798,7 +798,7 @@ The most opinionated Go source code linter for code audit.
 
 #### Help
  - https://go-critic.github.io/overview
- - `gocritic check -help`
+ - `go-critic check -help`
 
 -----------------
 ### golangci-lint
