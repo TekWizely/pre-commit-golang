@@ -872,3 +872,134 @@
     language: 'script'
     description: "Run 'golangci-lint run [$ARGS] $FILE' for each staged .go file"
     pass_filenames: true
+
+# ==============================================================================
+# golangci-lint-v2
+#   * File-based
+#   * Executes if any .go files modified
+# NOTES:
+#   `golangci-lint-v2` appears to work on single files when given them as args.
+#   This version uses golangci-lint v2 architecture which supports configuration
+#   files with `version: "2"` declarations.
+# ==============================================================================
+-   id: golangci-lint-v2
+    name: 'golangci-lint-v2'
+    entry: golangci-lint-v2.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'golangci-lint-v2 run [$ARGS] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
+# golangci-lint-v2-mod
+#   * Folder-Based
+#   * Recursive
+#   * Targets first parent folder with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# NOTES:
+#   Uses golangci-lint v2 architecture which supports configuration
+#   files with `version: "2"` declarations.
+# ==============================================================================
+-   id: golangci-lint-v2-mod
+    name: 'golangci-lint-v2-mod'
+    entry: golangci-lint-v2-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root $FILE); golangci-lint-v2 run [$ARGS] ./...' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# golangci-lint-v2-pkg
+#   * Folder-Based
+#   * Targets folder containing staged file
+#   * Executes if any .go files modified
+# NOTES:
+#   Uses golangci-lint v2 architecture which supports configuration
+#   files with `version: "2"` declarations.
+# ==============================================================================
+-   id: golangci-lint-v2-pkg
+    name: 'golangci-lint-v2-pkg'
+    entry: golangci-lint-v2-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'golangci-lint-v2 run [$ARGS] ./$(dirname $FILE)' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# golangci-lint-v2-repo-mod
+#   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# NOTES:
+#   Uses golangci-lint v2 architecture which supports configuration
+#   files with `version: "2"` declarations.
+# ==============================================================================
+-   id: golangci-lint-v2-repo-mod
+    name: 'golangci-lint-v2-repo-mod'
+    entry: golangci-lint-v2-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root); golangci-lint-v2 run [$ARGS] ./...' for each module in the repo"
+    pass_filenames: false
+
+# ==============================================================================
+# golangci-lint-v2-repo-pkg
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# NOTES:
+#   Uses golangci-lint v2 architecture which supports configuration
+#   files with `version: "2"` declarations.
+# ==============================================================================
+-   id: golangci-lint-v2-repo-pkg
+    name: 'golangci-lint-v2-repo-pkg'
+    entry: golangci-lint-v2-repo-pkg.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'golangci-lint-v2 run [$ARGS] ./...' in repo root folder"
+    pass_filenames: false
+
+# ==============================================================================
+# golangci-lint-v2-fmt
+#   * File-based
+#   * Executes if any .go files modified
+# NOTES:
+#   Uses golangci-lint v2's built-in fmt command which integrates with
+#   formatters configured in .golangci.yaml files with `version: "2"`.
+# ==============================================================================
+-   id: golangci-lint-v2-fmt
+    name: 'golangci-lint-v2-fmt'
+    entry: golangci-lint-v2-fmt.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'golangci-lint-v2 fmt [$ARGS] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
+# golangci-lint-v2-fmt-repo
+#   * Repo-based
+#   * Recursive
+#   * Executes if any .go files modified
+# NOTES:
+#   Uses golangci-lint v2's built-in fmt command which integrates with
+#   formatters configured in .golangci.yaml files with `version: "2"`.
+# ==============================================================================
+-   id: golangci-lint-v2-fmt-repo
+    name: 'golangci-lint-v2-fmt-repo'
+    entry: golangci-lint-v2-fmt-repo.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'golangci-lint-v2 fmt [$ARGS] ./...' in repo root folder"
+    pass_filenames: false
