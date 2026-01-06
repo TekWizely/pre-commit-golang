@@ -73,16 +73,16 @@ if [ "${__USE_GO_TOOL:-}" -eq 1 ]; then
 
 	# Go tool args
 	if [ "${#__GO_TOOL_ARGS[@]}" -gt 0 ]; then
-		new_cmd+=( "${__GO_TOOL_ARGS[@]}" )
+		new_cmd+=("${__GO_TOOL_ARGS[@]}")
 	fi
 
 	# Original cmd
 	if [ "${#cmd[@]}" -gt 0 ]; then
-		new_cmd+=( "${cmd[@]}" )
+		new_cmd+=("${cmd[@]}")
 	fi
 
 	# Set cmd to the new array
-	cmd=( "${new_cmd[@]}" )
+	cmd=("${new_cmd[@]}")
 
 	unset new_cmd
 fi
