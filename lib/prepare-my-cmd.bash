@@ -12,7 +12,7 @@ fi
 # Anything else (including '--' and after) gets saved and passed to next step
 # Positional order of saved arguments is preserved
 #
-_ARGS=()
+__ARGS=()
 while [ $# -gt 0 ] && [ "$1" != "--" ]; do
 	case "$1" in
 		--hook:error-on-output)

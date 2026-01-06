@@ -675,6 +675,70 @@
     pass_filenames: false
 
 # ==============================================================================
+# go-tool
+#   * File-based
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-tool
+    name: 'go-tool'
+    entry: go-tool.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'go tool [$ARGS] $FILE' for each staged .go file"
+    pass_filenames: true
+
+# ==============================================================================
+# go-tool-mod
+#   * Folder-Based
+#   * Recursive
+#   * Targets first parent folder with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-tool-mod
+    name: 'go-tool-mod'
+    entry: go-tool-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root $FILE); go tool [$ARGS]' for each staged .go file"
+    pass_filenames: true
+    require_serial: true
+
+# ==============================================================================
+# go-tool-repo
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# ==============================================================================
+-   id: go-tool-repo
+    name: 'go-tool-repo'
+    entry: go-tool-repo.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'go tool [$ARGS]' in the repo root folder"
+    pass_filenames: false
+
+# ==============================================================================
+# go-tool-repo-mod
+#   * Repo-Based
+#   * Recursive
+#   * Targets ALL folders with a go.mod file
+#   * Executes if any .go files modified
+#   * Executes if go.mod modified
+# ==============================================================================
+-   id: go-tool-repo-mod
+    name: 'go-tool-repo-mod'
+    entry: go-tool-repo-mod.sh
+    files: '(\.go$)|(\bgo\.mod$)'
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'cd $(mod_root); go tool [$ARGS]' for each module in the repo"
+    pass_filenames: false
+
+# ==============================================================================
 # go-vet-mod
 #   * Folder-Based
 #   * Recursive

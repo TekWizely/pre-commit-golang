@@ -5,6 +5,9 @@
 # shellcheck source=./common.bash
 . "$(dirname "${0}")/lib/common.bash"
 
+# shellcheck source=./prepare-go-tool.bash
+. "$(dirname "${0}")/lib/prepare-go-tool.bash"
+
 prepare_repo_hook_cmd "$@"
 
 if [ "${use_dot_dot_dot:-}" -eq 1 ]; then

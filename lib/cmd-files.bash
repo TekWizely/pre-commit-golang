@@ -3,6 +3,9 @@
 # shellcheck source=./common.bash
 . "$(dirname "${0}")/lib/common.bash"
 
+# shellcheck source=./prepare-go-tool.bash
+. "$(dirname "${0}")/lib/prepare-go-tool.bash"
+
 prepare_file_hook_cmd "$@"
 
 error_code=0
