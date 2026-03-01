@@ -31,6 +31,12 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #
     #           --hook:env:NAME=VALUE
     #
+    # NOTE: You can invoke hooks via 'go tool' using:
+    #
+    #           --hook:go-tool
+    #           --hook:go-tool-mod=MODFILE
+    #           --hook:go-tool-arg:ARG
+    #
     # Consider adding aliases to longer-named hooks for easier CLI usage.
     # ==========================================================================
 -   repo: https://github.com/tekwizely/pre-commit-golang
@@ -44,6 +50,13 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     -   id: go-build-pkg
     -   id: go-build-repo-mod
     -   id: go-build-repo-pkg
+    #
+    # Go Tool (Go 1.24+)
+    #
+    -   id: go-tool
+    -   id: go-tool-mod
+    -   id: go-tool-repo
+    -   id: go-tool-repo-mod
     #
     # Go Mod Tidy
     #
@@ -234,6 +247,33 @@ You can pass multiple  `--hook:env:` arguments.
 
 The arguments can appear anywhere in the `args:` list.
 
+#### Invoking Hooks Via go tool
+You can invoke hooks via `go tool` to ensure that a specific version of a tool is used (requires Go 1.24+).
+
+This feature is enabled via support for several specially-formatted arguments:
+
+* `--hook:go-tool` : Invoke the hook via `go tool <hook> ...`
+* `--hook:go-tool-mod=FILE` : Pass `-modfile=FILE` to the `go tool` invocation.
+* `--hook:go-tool-arg:ARG` : Pass `ARG` to the `go tool` invocation (can be repeated).
+
+The hook script will detect these arguments and invoke the configured tool via `go tool`.
+
+**NOTE:** When using `go-tool-mod` or `go-tool-arg` flags, you do not need to also provide the base `go-tool` flag; their presence triggers the use of the `go tool` invocation implicitly.
+
+The arguments can appear anywhere in the `args:` list (before the optional `--`).
+
+**NOTE:** The plain versions of these arguments (without the `hook:` prefix) are also supported, but **ONLY** if they appear at the very beginning of the `args:` list:
+
+* `--go-tool`
+* `--go-tool-mod=FILE`
+* `--go-tool-arg:ARG`
+
+For more information:
+* [Go v1.24 Tools Announcement](https://tip.golang.org/doc/go1.24#tools)
+* [Go Tools Documentation](https://tip.golang.org/doc/modules/managing-dependencies#tools)
+
+See the [go-tool](#go-tool) hooks to invoke `go tools` directly with custom arguments.
+
 #### Passing Ignore Patterns To Hooks
 
 You can pass arguments to hooks to specify files / directories to ignore.
@@ -404,6 +444,7 @@ This can be useful, for example, for hooks that display warnings, but don't gene
 
  - Build Tools
    - [go-build](#go-build)
+   - [go-tool](#go-tool)
    - [go-mod-tidy](#go-mod-tidy)
  - Correctness Checkers
    - [go-test](#go-test)
@@ -443,6 +484,34 @@ Comes with Golang ( [golang.org](https://golang.org/) )
 ##### Help
  - https://golang.org/cmd/go/#hdr-Compile_packages_and_dependencies
  - `go help build`
+
+-----------
+### go-tool
+Runs the go tool command identified by the provided arguments.
+
+| Hook ID             | Description                                                              |
+|---------------------|--------------------------------------------------------------------------|
+| `go-tool`           | Run `'go tool [$ARGS] $FILE'` for each staged .go file                   |
+| `go-tool-mod`       | Run `'cd $(mod_root $FILE); go tool [$ARGS]'` for each staged .go file   |
+| `go-tool-repo`      | Run `'go tool [$ARGS]'` in the repo root folder                          |
+| `go-tool-repo-mod`  | Run `'cd $(mod_root); go tool [$ARGS]'` for each module in the repo      |
+
+Go ships with a number of builtin tools, and additional tools may be defined in the go.mod of the current module.
+
+##### See Also
+See [Invoking Hooks Via go tool](#invoking-hooks-via-go-tool) to invoke existing hooks via `go tool`.
+
+##### Install
+Comes with Golang ( [golang.org](https://golang.org/) )
+
+##### Useful Args
+```
+-modfile=file.mod : Use an alternate mod file (default: module's go.mod)
+```
+
+##### Help
+- https://go.dev/doc/go1.24#tools
+- `go help tool`
 
 ---------------
 ### go-mod-tidy

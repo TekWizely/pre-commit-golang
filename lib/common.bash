@@ -1,5 +1,7 @@
 # shellcheck shell=bash
 
+: "${cmd:=}"
+: "${target:=}"
 : "${use_dot_dot_dot:=1}"
 : "${error_on_output:=0}"
 : "${ignore_pattern_array:=}"

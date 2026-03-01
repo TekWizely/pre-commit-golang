@@ -1,13 +1,17 @@
 # shellcheck shell=bash
+: "${target:=}"
 
 # shellcheck source=./common.bash
 . "$(dirname "${0}")/lib/common.bash"
+
+# shellcheck source=./prepare-go-tool.bash
+. "$(dirname "${0}")/lib/prepare-go-tool.bash"
 
 prepare_repo_hook_cmd "$@"
 
 # Add target after options
 #
-if [[ ${#target[@]} -gt 0 ]]; then
+if [[ "${#target[@]}" -gt 0 ]]; then
 	OPTIONS+=("${target[@]}")
 fi
 if [ "${error_on_output:-}" -eq 1 ]; then

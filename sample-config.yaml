@@ -74,6 +74,12 @@ repos:
     #
     #           --hook:env:NAME=VALUE
     #
+    # NOTE: You can invoke hooks via 'go tool' using:
+    #
+    #           --hook:go-tool
+    #           --hook:go-tool-mod=MODFILE
+    #           --hook:go-tool-arg:ARG
+    #
     # Always Run:
     #   By default, hooks ONLY run when matching file types are staged.
     #   When configured to "always_run", a hook is executed as if EVERY matching
@@ -93,6 +99,13 @@ repos:
     -   id: go-build-pkg
     -   id: go-build-repo-mod
     -   id: go-build-repo-pkg
+    #
+    # Go Tool (Go 1.24+)
+    #
+    -   id: go-tool
+    -   id: go-tool-mod
+    -   id: go-tool-repo
+    -   id: go-tool-repo-mod
     #
     # Go Mod Tidy
     #
