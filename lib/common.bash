@@ -34,7 +34,7 @@ function verify_hook_cmd {
 		printf "error: no command provided" >&2
 		exit 1
 	fi
-	if ! type "${cmd[0]}" &> /dev/null; then
+	if ! command -v "${cmd[0]}" &> /dev/null; then
 		printf "error: command not found: %s" "${cmd[0]}" >&2
 		exit 1
 	fi
