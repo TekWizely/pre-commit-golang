@@ -43,7 +43,7 @@ while [ $# -gt 0 ] && [ "$1" != "--" ]; do
 			shift
 			;;
 		--hook:go-tool-mod=*)
-			modfile="${1#--go-tool-mod=}"
+			modfile="${1#--hook:go-tool-mod=}"
 			if [ -n "${modfile}" ]; then
 				__USE_GO_TOOL=1
 				__GO_TOOL_ARGS+=("-modfile=${modfile}")
@@ -51,7 +51,7 @@ while [ $# -gt 0 ] && [ "$1" != "--" ]; do
 			shift
 			;;
 		--hook:go-tool-arg:*)
-			arg="${1#--go-tool-arg:}"
+			arg="${1#--hook:go-tool-arg:}"
 			if [ -n "${arg}" ]; then
 				__USE_GO_TOOL=1
 				__GO_TOOL_ARGS+=("${arg}")
