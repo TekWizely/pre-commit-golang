@@ -7,6 +7,7 @@
 : "${ignore_pattern_array:=}"
 : "${ignore_file_pattern_array:=}"
 : "${ignore_dir_pattern_array:=}"
+: "${batch_size:=1}"
 ignore_dir_pattern_array+=("vendor")
 
 ##
@@ -214,6 +215,7 @@ function parse_file_hook_args {
 	# Positional order of saved arguments is preserved
 	#
 	local ENV_REGEX='^[a-zA-Z_][a-zA-Z0-9_]*=.*$'
+	local BATCH_SIZE_REGEX='^(0|[1-9][0-9]*)$'
 	ENV_VARS=()
 	local __ARGS=()
 	while [ $# -gt 0 ] && [ "$1" != "--" ]; do
@@ -224,6 +226,16 @@ function parse_file_hook_args {
 					ENV_VARS+=("${env_var}")
 				else
 					printf "ERROR: Invalid hook:env variable: '%s'\n" "${env_var}" >&2
+					exit 1
+				fi
+				shift
+				;;
+			--hook:batch-size=*)
+				local batch_size_arg="${1#--hook:batch-size=}"
+				if [[ "${batch_size_arg}" =~ ${BATCH_SIZE_REGEX} ]]; then
+					batch_size="${batch_size_arg}"
+				else
+					printf "ERROR: Invalid hook:batch-size value: '%s'\n" "${batch_size_arg}" >&2
 					exit 1
 				fi
 				shift

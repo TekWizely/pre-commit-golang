@@ -31,6 +31,13 @@ You can copy/paste the following snippet into your `.pre-commit-config.yaml` fil
     #
     #           --hook:env:NAME=VALUE
     #
+    # NOTE: You can set the number of files to process in a single command
+    #       invocation for file-based hooks using the following format:
+    #
+    #           --hook:batch-size=N
+    #
+    #       (N=0 will process all files in a single invocation)
+    #
     # NOTE: You can invoke hooks via 'go tool' using:
     #
     #           --hook:go-tool
@@ -211,6 +218,8 @@ See the [my-cmd](#my-cmd) hooks for more information.
 
 --------------------------
 ### Useful Hook Parameters
+Here are a few pre-commit parameters that may be useful when configuring hooks:
+
 ```
 -   id: hook-id
     args: [arg1, arg2, ..., '--'] # Pass options ('--' is optional)
@@ -245,7 +254,22 @@ The hook script will detect this argument and set the variable `NAME` to the val
 
 You can pass multiple  `--hook:env:` arguments.
 
-The arguments can appear anywhere in the `args:` list.
+#### Passing Batch Size To Hooks
+For file-based hooks, you can specify the number of files to include in a single command invocation.
+
+**NOTE:** By default, file-based hooks execute the command once for each staged file.
+
+This feature is enabled via support for a specially-formatted argument:
+
+* `--hook:batch-size=N`
+
+The hook script will detect this argument and use `N` as the batch size.
+
+* `N` must be an integer >= 0.
+* A value of `1` (the default) executes the command once for each file.
+* A value of `0` executes the command once for all files.
+* A value of `N > 1` executes the command once for every `N` files.
+  (note: the last execution may have < N files)
 
 #### Invoking Hooks Via go tool
 You can invoke hooks via `go tool` to ensure that a specific version of a tool is used (requires Go 1.24+).
@@ -387,6 +411,9 @@ NOTES:
 By default, hooks ONLY run when matching file types (usually `*.go`) are staged.
 
 When configured to `"always_run"`, a hook is executed as if EVERY matching file were staged.
+
+#### Placement of --Hook: Arguments
+The special `--hook:` arguments listed above can appear anywhere in the `args:` list.
 
 #### Aliases / Names
 

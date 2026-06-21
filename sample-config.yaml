@@ -74,6 +74,14 @@ repos:
     #
     #           --hook:env:NAME=VALUE
     #
+    # Passing Batch Size to Hooks:
+    #  You can set the number of files to process in a single command
+    #  invocation for file-based hooks using the following format:
+    #
+    #           --hook:batch-size=N
+    #
+    #       (N=0 will process all files in a single invocation)
+    #
     # NOTE: You can invoke hooks via 'go tool' using:
     #
     #           --hook:go-tool
