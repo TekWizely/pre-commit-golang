@@ -455,6 +455,7 @@ This can be useful, for example, for hooks that display warnings, but don't gene
    - [go-structslop](#go-structslop)
  - Formatters
    - [go-fmt](#go-fmt)
+   - [go-fix](#go-fix)
    - [go-fumpt](#go-fumpt)
    - [go-imports](#go-imports)
    - [go-returns](#go-returns)
@@ -683,7 +684,25 @@ Comes with Golang ( [golang.org](https://golang.org/) )
  - https://godoc.org/github.com/golang/go/src/cmd/gofmt
  - `gofmt -h`
 
-------------
+----------
+### go-fix
+Rewrites Go source files using known compatibility fix data, based on
+changes to the standard library.
+
+ - Can modify files
+
+| Hook ID  | Description                                   |
+|----------|-----------------------------------------------|
+| `go-fix` | Run `'go fix [$ARGS] ./...'` in repo root folder |
+
+##### Install
+Comes with Golang ( [golang.org](https://golang.org/) )
+
+##### Help
+ - https://golang.org/cmd/go/#hdr-Upgrade_packages_for_new_releases
+ - `go help fix`
+
+--------------
 ### go-fumpt
 Enforce a stricter format than `gofmt`, while being backwards compatible.
 

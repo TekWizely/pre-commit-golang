@@ -207,6 +207,23 @@
     pass_filenames: false
 
 # ==============================================================================
+# go-fix
+#   * Repo-Based
+#   * Recursive
+#   * Executes if any .go files modified
+# NOTES:
+#   `go fix` modifies files as it runs.
+# ==============================================================================
+-   id: go-fix
+    name: 'go-fix'
+    entry: go-fix.sh
+    types: [go]
+    exclude: '(^|/)vendor/'
+    language: 'script'
+    description: "Run 'go fix [$ARGS] ./...' in repo root folder"
+    pass_filenames: false
+
+# ==============================================================================
 # go-fumpt
 #   * File-based
 #   * Executes if any .go files modified

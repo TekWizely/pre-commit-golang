@@ -164,6 +164,7 @@ repos:
     #
     -   id: go-fmt
     -   id: go-fmt-repo
+    -   id: go-fix
     -   id: go-fumpt        # replaces go-fmt
     -   id: go-fumpt-repo   # replaces go-fmt-repo
     -   id: go-imports      # replaces go-fmt
